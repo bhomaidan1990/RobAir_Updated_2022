@@ -46,6 +46,13 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS
     include
+  LIBRARIES
+    ${PROJECT_NAME}_laser_text_display
+    ${PROJECT_NAME}_laser_graphical_display
+  CATKIN_DEPENDS
+    roscpp
+  # DEPENDS
+    ## External Libraries
 )
 
 #===========================================================
@@ -61,9 +68,9 @@ if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
 endif()
 
 #===========================================================
-# Build targets (for the ros_control hardware interface)
+# Build targets (for the laser_text_display)
 #===========================================================
-set(target_name ${PROJECT_NAME}_tutorial_ros)
+set(target_name ${PROJECT_NAME}_laser_text_display)
 
 #-----------------------------
 # Library target
@@ -79,6 +86,10 @@ target_include_directories(${target_name} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>"
   "${catkin_INCLUDE_DIRS}"
+)
+
+target_link_libraries(${target_name} PUBLIC
+  ${catkin_LIBRARIES}
 )
 
 target_compile_features(${target_name} PRIVATE cxx_std_14)
@@ -118,16 +129,83 @@ endif()
 
 set_target_properties(${target_name}_exe
   PROPERTIES
-    OUTPUT_NAME "tutorial_ros"
+    OUTPUT_NAME "laser_text_display"
+)
+#===========================================================
+# Build targets (for the laser_text_display)
+#===========================================================
+set(target_name ${PROJECT_NAME}_laser_graphical_display)
+
+#-----------------------------
+# Library target
+#-----------------------------
+set(
+  src_files
+    src/laser_graphical_display.cpp
 )
 
+add_library(${target_name} ${src_files})
+
+target_include_directories(${target_name} PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>"
+  "${catkin_INCLUDE_DIRS}"
+)
+
+target_link_libraries(${target_name} PUBLIC
+  ${catkin_LIBRARIES}
+)
+
+target_compile_features(${target_name} PRIVATE cxx_std_14)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(${target_name} PRIVATE -Wall -Wextra -Wpedantic)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  target_compile_options(${target_name} PRIVATE /W4)
+endif()
+
+#-----------------------------
+# Executable target
+#-----------------------------
+set(
+  src_files
+    src/laser_graphical_display_node.cpp
+)
+
+add_executable(${target_name}_exe ${src_files})
+
+target_include_directories(${target_name}_exe PRIVATE
+  "${catkin_INCLUDE_DIRS}"
+)
+
+target_link_libraries(${target_name}_exe PRIVATE
+  ${catkin_LIBRARIES}
+  ${target_name}
+)
+
+target_compile_features(${target_name}_exe PRIVATE cxx_std_14)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(${target_name}_exe PRIVATE -Wall -Wextra -Wpedantic)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  target_compile_options(${target_name}_exe PRIVATE /W4)
+endif()
+
+set_target_properties(${target_name}_exe
+  PROPERTIES
+    OUTPUT_NAME "laser_graphical_display"
+)
 #===========================================================
 # Install
 #===========================================================
 install(
   TARGETS
-    ${PROJECT_NAME}_tutorial_ros
-    ${PROJECT_NAME}_tutorial_ros_exe
+    ${PROJECT_NAME}_laser_text_display
+    ${PROJECT_NAME}_laser_text_display_exe
+
+    ${PROJECT_NAME}_laser_graphical_display
+    ${PROJECT_NAME}_laser_graphical_display_exe
+
   ARCHIVE DESTINATION "${CATKIN_PACKAGE_LIB_DESTINATION}"
   LIBRARY DESTINATION "${CATKIN_PACKAGE_LIB_DESTINATION}"
   RUNTIME DESTINATION "${CATKIN_PACKAGE_BIN_DESTINATION}"
@@ -138,22 +216,7 @@ install(
   DESTINATION "${CATKIN_PACKAGE_INCLUDE_DESTINATION}"
 )
 
-# install(
-#   DIRECTORY config launch
-#   DESTINATION "${CATKIN_PACKAGE_SHARE_DESTINATION}"
-# )
-
-# xx===============================================================xx
-# ## Declare a cpp executable
-# add_executable(laser_text_display_node src/laser_text_display_node.cpp)
-# # add_executable(laser_graphical_display_node src/laser_graphical_display_node.cpp)
-# # add_executable(detect_motion_node src/detect_motion_node.cpp)
-# # add_executable(perform_clustering_node src/perform_clustering_node.cpp)
-# # add_executable(rotation_done_node src/rotation_done_node.cpp)
-
-# ## Specify libraries to link a library or executable target against
-# target_link_libraries(laser_text_display_node ${catkin_LIBRARIES})
-# # target_link_libraries(laser_graphical_display_node ${catkin_LIBRARIES})
-# # target_link_libraries(detect_motion_node ${catkin_LIBRARIES})
-# # target_link_libraries(perform_clustering_node ${catkin_LIBRARIES})
-# # target_link_libraries(rotation_done_node ${catkin_LIBRARIES})
+install(
+  DIRECTORY config launch
+  DESTINATION "${CATKIN_PACKAGE_SHARE_DESTINATION}"
+)
