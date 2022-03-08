@@ -51,8 +51,12 @@ public:
     /**
      * \brief Default Class Constructor.
      */
-    LaserTextDisplay();
-
+    LaserTextDisplay(ros::NodeHandle& nh);
+    /**
+     * \brief Default Class Destructor.
+     */
+    virtual ~LaserTextDisplay(){}
+    
     /**
      * \brief Laser Data Processing.
      */    
@@ -69,11 +73,11 @@ private:
     /**
      * \brief Node Handler.
      */
-    ros::NodeHandle n;
+    ros::NodeHandle nh_;
     /**
      * \brief Laser Scan Subscriber.
      */
-    ros::Subscriber sub_scan;
+    ros::Subscriber sub_scan_;
     /**
      * \brief Number of Laser Scan Beams.
      */
@@ -100,4 +104,5 @@ private:
     bool new_laser;
 };
 }
+
 #endif

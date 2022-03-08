@@ -34,28 +34,33 @@
  ***********************************************************************************************************************
  */
 
-#include <tutorial_ros/laser_graphical_display.h>
+//threshold for detection of motion
+#define DETECTION_THRESHOLD 0.2
+
+#include <tutorial_ros/detect_motion.h>
 #include "visualization_msgs/Marker.h"
 #include "ros/time.h"
 #include <cmath>
 
-namespace robair
-{
+namespace robair{
 /***********************************************************************************************************************
- * Class definitions: LaserGraphicalDisplay
+ * Class definitions: DetectMotion
  */
 
 /***********************************************************
  * Primary methods
  */
-LaserGraphicalDisplay::LaserGraphicalDisplay(ros::NodeHandle& nh):
+DetectMotion::DetectMotion(ros::NodeHandle& nh):
   nh_(nh) 
   {
-    sub_scan_ = nh_.subscribe("scan", 1, &LaserGraphicalDisplay::scanCallback, this);
+    sub_scan_ = nh_.subscribe("scan", 1, &DetectMotion::scanCallback, this);
+    sub_robot_moving_ = nh_.subscribe("robot_moving", 1, &DetectMotion::robot_movingCallback, this);
     // Preparing a topic to publish our results. This will be used by the visualization tool rviz
-    pub_laser_graphical_display_marker_ = nh_.advertise<visualization_msgs::Marker>("laser_graphical_display_marker", 1); 
+    pub_detect_motion_marker_ = nh_.advertise<visualization_msgs::Marker>("detect_motion_marker", 1); 
 
-    new_laser = false;
+    init_laser = false;
+    init_robot = false;
+    previous_robot_moving = true;
 
     //INFINTE LOOP TO COLLECT LASER DATA AND PROCESS THEM
     ros::Rate r(10);// this node will run at 10hz
@@ -64,42 +69,90 @@ LaserGraphicalDisplay::LaserGraphicalDisplay(ros::NodeHandle& nh):
         update();//processing of data
         r.sleep();//we wait if the processing (ie, callback+update) has taken less than 0.1s (ie, 10 hz)
     }
-
 }
 
-void LaserGraphicalDisplay::update() {
+void DetectMotion::update() {
 
-    // we wait for new data of the laser
-    if ( new_laser )
-    {
+    // we wait for new data of the laser and of the robot_moving_node to perform laser processing
+    if ( init_laser && init_robot ) {
 
-        new_laser = false;
+        ROS_INFO("\n");
         ROS_INFO("New data of laser received");
+        ROS_INFO("New data of robot_moving received");
 
         nb_pts = 0;
-        for ( int loop=0 ; loop < nb_beams; loop++ )
-        {
-            ROS_INFO("r[%i] = %f, theta[%i] (in degrees) = %f, x[%i] = %f, y[%i] = %f", loop, r[loop], loop, theta[loop]*180/M_PI, loop, current_scan[loop].x, loop, current_scan[loop].y);
-
-            display[nb_pts] = current_scan[loop];
-
-            colors[nb_pts].r = 0;
-            colors[nb_pts].g = 0;
-            colors[nb_pts].b = 1;
-            colors[nb_pts].a = 1.0;
-
-            nb_pts++;
+        if ( !current_robot_moving ) {
+            //if the robot is not moving then we can perform moving person detection
+            detectMotion();
+            // DO NOT FORGET to store the background but when ???
+            storeBackground();
+            ROS_INFO("robot is not moving");
         }
+        else
+        {
+            // IMPOSSIBLE TO DETECT MOTIONS because the base is moving
+            // what is the value of dynamic table for each hit of the laser ?
+            ROS_INFO("robot is moving");
+        }
+        previous_robot_moving = current_robot_moving;
 
+        //graphical display of the results
         populateMarkerTopic();
 
     }
+    else
+        if ( !init_robot )
+            ROS_WARN("waiting for robot_moving_node");
 
+}// update
+
+void DetectMotion::storeBackground() {
+// store for each hit of the laser its range r in the background table
+
+    ROS_INFO("storing background");
+    /*== TODO: Fill here ==*/
+    /*for (int loop=0; loop<nb_beams; loop++)
+        background[loop] = ...;*/
+    for (int loop=0; loop<nb_beams; loop++)
+        background[loop] = r[loop]; // not sure if r or current_scan
+    ROS_INFO("background stored");
 }
 
-void LaserGraphicalDisplay::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan) {
+void DetectMotion::detectMotion() {
 
-    new_laser = true;
+    ROS_INFO("detecting motion");
+
+    for (int loop=0; loop<nb_beams; loop++ )
+      {//loop over all the hits
+      /*== TODO: Fill here ==*/
+        // if the difference between ( the background and the current value r ) is higher than "detection_threshold"
+        // then
+        if(background[loop]-r[loop]) // not sure r or sqrt(current_scan.x^2 + current_scan.y^2)
+             dynamic[loop] = true;//the current hit is dynamic
+        else
+            dynamic[loop] = false;//else its static
+
+    if ( dynamic[loop] ) {
+
+        ROS_INFO("hit[%i](%f, %f) is dynamic", loop, current_scan[loop].x, current_scan[loop].y);
+
+        //display in blue of hits that are dynamic
+        display[nb_pts] = current_scan[loop];
+
+        colors[nb_pts].r = 0;
+        colors[nb_pts].g = 0;
+        colors[nb_pts].b = 1;
+        colors[nb_pts].a = 1.0;
+
+        nb_pts++;
+    }
+    }
+    ROS_INFO("motion detected");
+}
+
+void DetectMotion::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan) {
+
+    init_laser = true;
     // store the important data related to laserscanner
     range_min = scan->range_min;
     range_max = scan->range_max;
@@ -122,16 +175,21 @@ void LaserGraphicalDisplay::scanCallback(const sensor_msgs::LaserScan::ConstPtr&
         current_scan[loop].y = r[loop] * sin(beam_angle);
         current_scan[loop].z = 0.0;
     }
-
 }
 
-void LaserGraphicalDisplay::populateMarkerReference() {
+void DetectMotion::robot_movingCallback(const std_msgs::Bool::ConstPtr& state) {
+    init_robot = true;
+    current_robot_moving = state->data;
+}
+
+// Draw the field of view and other references
+void DetectMotion::populateMarkerReference() {
 
     visualization_msgs::Marker references;
 
     references.header.frame_id = "laser";
     references.header.stamp = ros::Time::now();
-    references.ns = "laser_graphical_display";
+    references.ns = "example";
     references.id = 1;
     references.type = visualization_msgs::Marker::LINE_STRIP;
     references.action = visualization_msgs::Marker::ADD;
@@ -174,17 +232,16 @@ void LaserGraphicalDisplay::populateMarkerReference() {
     v.z = 0.0;
     references.points.push_back(v);
 
-    pub_laser_graphical_display_marker_.publish(references);
-
+    pub_detect_motion_marker_.publish(references);
 }
 
-void LaserGraphicalDisplay::populateMarkerTopic(){
+void DetectMotion::populateMarkerTopic(){
 
     visualization_msgs::Marker marker;
 
     marker.header.frame_id = "laser";
     marker.header.stamp = ros::Time::now();
-    marker.ns = "laser_graphical_display";
+    marker.ns = "example";
     marker.id = 0;
     marker.type = visualization_msgs::Marker::POINTS;
     marker.action = visualization_msgs::Marker::ADD;
@@ -197,7 +254,6 @@ void LaserGraphicalDisplay::populateMarkerTopic(){
     marker.color.a = 1.0;
 
     //ROS_INFO("%i points to display", nb_pts);
-    //for ( int time=0; time<5; time ++)
     for (int loop = 0; loop < nb_pts; loop++) {
             geometry_msgs::Point p;
             std_msgs::ColorRGBA c;
@@ -216,7 +272,8 @@ void LaserGraphicalDisplay::populateMarkerTopic(){
             marker.colors.push_back(c);
         }
 
-    pub_laser_graphical_display_marker_.publish(marker);
+    pub_detect_motion_marker_.publish(marker);
     populateMarkerReference();
 }
+
 }

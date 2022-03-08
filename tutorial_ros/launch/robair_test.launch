@@ -3,6 +3,7 @@
 
   <node type="laser_text_display_node" name="laser_text_disp" pkg="tutorial_ros"/>
   <node type="laser_graphical_display_node" name="laser_graphical_disp" pkg="tutorial_ros"/>
+  <node type="detect_motion_node" name="detect_motion" pkg="tutorial_ros"/>
 
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find tutorial_ros)/config/rviz_config.rviz" />
 

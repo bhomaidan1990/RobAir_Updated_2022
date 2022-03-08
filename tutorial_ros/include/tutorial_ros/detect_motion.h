@@ -33,11 +33,11 @@
  *
  ***********************************************************************************************************************
  */
-
+ 
 #pragma once
 
-#ifndef ROBAIR_ROBOT_LASER_GRAPHICAL_DISPLAY_H
-#define ROBAIR_ROBOT_LASER_GRAPHICAL_DISPLAY_H
+#ifndef ROBAIR_ROBOT_DETECT_MOTION_DISPLAY_H
+#define ROBAIR_ROBOT_DETECT_MOTION_DISPLAY_H
 
 #include "ros/ros.h"
 #include "sensor_msgs/LaserScan.h"
@@ -45,43 +45,53 @@
 #include "std_msgs/ColorRGBA.h"
 #include "std_msgs/Bool.h"
 
-namespace robair
-{
+namespace robair{
 
-class LaserGraphicalDisplay {
+class DetectMotion {
 public:
     /**
      * \brief Default Class Constructor.
      */
-    LaserGraphicalDisplay(ros::NodeHandle& nh);
+    DetectMotion(ros::NodeHandle& nh);
 
     /**
      * \brief Default Class Destructor.
      */
-    virtual ~LaserGraphicalDisplay(){}
-    
+    virtual ~DetectMotion(){}
+
     /**
      * \brief Laser Data Processing.
      */
     void update();
+    
+    /**
+     * \brief Laser Data Processing.
+     */  
+    void storeBackground();
 
     /**
-     * \brief Laser Scan Subscriber Callback.
-     * \param scan Laser Scan Message to Trigger the Callback.
-     *
-     */
+     * \brief Laser Data Processing.
+     */  
+    void detectMotion();
+
+    /**
+     * \brief Laser Data Processing.
+     */  
     void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan);
 
     /**
-     * \brief Draws the Field of View and Other References.
-     *
-     */
+     * \brief Laser Data Processing.
+     */  
+    void robot_movingCallback(const std_msgs::Bool::ConstPtr &state);
+
+    /**
+     * \brief Laser Data Processing.
+     */  
     void populateMarkerReference();
 
     /**
-     * \brief Marker Topic Publisher.
-     *
-     */
+     * \brief Laser Data Processing.
+     */  
     void populateMarkerTopic();
 
 private:
@@ -94,9 +104,14 @@ private:
      */
     ros::Subscriber sub_scan_;
     /**
-     * \brief Graphical Display Marker Publisher.
+     * \brief Robot Motion Subscriber.
      */
-    ros::Publisher pub_laser_graphical_display_marker_;
+    ros::Subscriber sub_robot_moving_;
+    /**
+     * \brief Motion Detection Marker Publisher.
+     */
+    ros::Publisher pub_detect_motion_marker_;
+
     /**
      * \brief Number of Laser Scan Beams.
      */
@@ -117,22 +132,51 @@ private:
      * \brief Current Laser Points.
      */
     geometry_msgs::Point current_scan[1000];
+
     /**
-     * \brief New Laser Rading Availabilty Flag.
+     * \brief TODO.
      */
-    bool new_laser;
+    bool init_robot;
+    /**
+     * \brief TODO.
+     */
+    bool stored_background;
+    /**
+     * \brief TODO.
+     */
+    float background[1000];
+    /**
+     * \brief TODO.
+     */
+    bool dynamic[1000];
+    /**
+     * \brief TODO.
+     */
+    bool current_robot_moving;
+    /**
+     * \brief TODO.
+     */
+    bool previous_robot_moving;
     /**
      * \brief Number of Points.
      */
     int nb_pts;
     /**
      * \brief Laser Points to Display.
-     */
+     */ 
     geometry_msgs::Point display[1000];
     /**
      * \brief Color Messages.
      */
     std_msgs::ColorRGBA colors[1000];
+    /**
+     * \brief To Check if New Laser Data is Available.
+     */
+    bool init_laser;
+    /**
+     * \brief TODO.
+     */
+    bool first;
 };
 }
 

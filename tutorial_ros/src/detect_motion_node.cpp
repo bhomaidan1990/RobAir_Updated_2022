@@ -34,13 +34,13 @@
  ***********************************************************************************************************************
  */
 
-#include <tutorial_ros/laser_graphical_display.h>
+#include <tutorial_ros/detect_motion.h>
 
 int main(int argc, char **argv){
 
-    ros::init(argc, argv, "laser_graphical_display_node");
+    ros::init(argc, argv, "detect_motion_node");
     ros::NodeHandle nh("~");
-    robair::LaserGraphicalDisplay basic_object(nh);
+    robair::DetectMotion basic_object(nh);
 
     ros::spin();
 

@@ -6,9 +6,9 @@
   <description>
     ROBAIR Laser Scanner Tutorial.
   </description>
-  <maintainer email="olivier@todo.todo">olivier</maintainer>
-  <license>BSD-3-Clause</license>
-  <author>Jon Tjerngren</author>
+  <maintainer email="NoeBoulaye@todo.todo">Noe Boulaye</maintainer>
+  <license>LGPLV3</license>
+  <author>Olivier Aycard</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 

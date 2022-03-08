@@ -49,9 +49,10 @@ namespace robair
  * Primary methods
  */
 
-LaserTextDisplay::LaserTextDisplay() {
-
-    sub_scan = n.subscribe("scan", 1, &LaserTextDisplay::scanCallback, this);
+LaserTextDisplay::LaserTextDisplay(ros::NodeHandle& nh):
+  nh_(nh) 
+  {
+    sub_scan_ = nh_.subscribe("scan", 1, &LaserTextDisplay::scanCallback, this);
 
     new_laser = false;
 
@@ -60,7 +61,8 @@ LaserTextDisplay::LaserTextDisplay() {
     while (ros::ok()) {
         ros::spinOnce();//each callback is called once to collect new data: laser
         update();//processing of data
-        r.sleep();//we wait if the processing (ie, callback+update) has taken less than 0.1s (ie, 10 hz)
+        //we wait if the processing (ie, callback+update) has taken less than 0.1s (ie, 10 hz)
+        r.sleep();
     }
 
 }
@@ -74,7 +76,8 @@ void LaserTextDisplay::update() {
         ROS_INFO("New data of laser received");
 
         for ( int loop=0 ; loop < nb_beams; loop++ )
-            ROS_INFO("r[%i] = %f, theta[%i] (in degrees) = %f, x[%i] = %f, y[%i] = %f", loop, r[loop], loop, theta[loop]*180/M_PI, loop, current_scan[loop].x, loop, current_scan[loop].y);
+            ROS_INFO("r[%i] = %f, theta[%i] (in degrees) = %f, x[%i] = %f, y[%i] = %f", loop, 
+              r[loop], loop, theta[loop]*180/M_PI, loop, current_scan[loop].x, loop, current_scan[loop].y);
 
         new_laser = false;
 
@@ -91,12 +94,14 @@ void LaserTextDisplay::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan
     angle_min = scan->angle_min;
     angle_max = scan->angle_max;
     angle_inc = scan->angle_increment;
-    nb_beams = ((-1 * angle_min) + angle_max)/angle_inc;
+    nb_beams = 
+      ((-1 * angle_min) + angle_max)/angle_inc;
 
     // store the range and the coordinates in cartesian framework of each hit
     float beam_angle = angle_min;
     for ( int loop=0 ; loop < nb_beams; loop++, beam_angle += angle_inc ) {
-        if ( ( scan->ranges[loop] < range_max ) && ( scan->ranges[loop] > range_min ) )
+        if ( ( scan->ranges[loop] < range_max ) && 
+           ( scan->ranges[loop] > range_min ) )
             r[loop] = scan->ranges[loop];
         else
             r[loop] = range_max;
@@ -109,5 +114,4 @@ void LaserTextDisplay::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan
     }
 
 }
-
 }
