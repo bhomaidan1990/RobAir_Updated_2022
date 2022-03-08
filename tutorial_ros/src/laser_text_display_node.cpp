@@ -34,14 +34,6 @@
  ***********************************************************************************************************************
  */
 
-// #include "ros/ros.h"
-// #include "ros/time.h"
-// #include "sensor_msgs/LaserScan.h"
-// #include "visualization_msgs/Marker.h"
-// #include "geometry_msgs/Point.h"
-// #include "std_msgs/ColorRGBA.h"
-// #include <cmath>
-// #include "std_msgs/Bool.h"
 #include <tutorial_ros/laser_text_display.h>
 
 int main(int argc, char **argv){
