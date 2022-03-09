@@ -54,15 +54,17 @@ DetectMotion::DetectMotion(ros::NodeHandle& nh):
   nh_(nh) 
   {
     sub_scan_ = nh_.subscribe("/scan", 1, &DetectMotion::scanCallback, this);
-    sub_robot_moving_ = nh_.subscribe("/robot_moving", 1, &DetectMotion::robot_movingCallback, this);
+    // TODO: check topic namespace!
+    sub_robot_moving_ = nh_.subscribe("/robot_moving/robot_moving", 1, &DetectMotion::robotMovingCallback, this);
     // Preparing a topic to publish our results. This will be used by the visualization tool rviz
     pub_detect_motion_marker_ = nh_.advertise<visualization_msgs::Marker>("detect_motion_marker", 1); 
 
-    init_laser = false;
+    new_laser = false;
     init_robot = false;
     previous_robot_moving = true;
+    stored_background = false;
 
-    //INFINTE LOOP TO COLLECT LASER DATA AND PROCESS THEM
+    // INFINTE LOOP TO COLLECT LASER DATA AND PROCESS THEM
     ros::Rate r(10);// this node will run at 10hz
     while (ros::ok()) {
         ros::spinOnce();//each callback is called once to collect new data: laser + robot_moving
@@ -74,18 +76,20 @@ DetectMotion::DetectMotion(ros::NodeHandle& nh):
 void DetectMotion::update() {
 
     // we wait for new data of the laser and of the robot_moving_node to perform laser processing
-    if ( init_laser && init_robot ) {
+    if ( new_laser && init_robot ) {
 
         ROS_INFO("\n");
         ROS_INFO("New data of laser received");
         ROS_INFO("New data of robot_moving received");
 
-        nb_pts = 0;
+        nb_dynamic_pts = 0;
         if ( !current_robot_moving ) {
             //if the robot is not moving then we can perform moving person detection
-            detectMotion();
+            if (stored_background)
+                detectMotion();
             // DO NOT FORGET to store the background but when ???
-            storeBackground();
+            if (previous_robot_moving)
+                storeBackground();
             ROS_INFO("robot is not moving");
         }
         else
@@ -104,8 +108,7 @@ void DetectMotion::update() {
         if ( !init_robot )
             ROS_WARN("waiting for robot_moving_node");
 
-}// update
-
+}
 void DetectMotion::storeBackground() {
 // store for each hit of the laser its range r in the background table
 
@@ -114,7 +117,10 @@ void DetectMotion::storeBackground() {
     /*for (int loop=0; loop<nb_beams; loop++)
         background[loop] = ...;*/
     for (int loop=0; loop<nb_beams; loop++)
-        background[loop] = r[loop]; // not sure if r or current_scan
+        background[loop] = r[loop];
+
+    stored_background = true;
+
     ROS_INFO("background stored");
 }
 
@@ -127,32 +133,32 @@ void DetectMotion::detectMotion() {
       /*== TODO: Fill here ==*/
         // if the difference between ( the background and the current value r ) is higher than "detection_threshold"
         // then
-        if(background[loop]-r[loop]) // not sure r or sqrt(current_scan.x^2 + current_scan.y^2)
-             dynamic[loop] = true;//the current hit is dynamic
+        if( (background[loop]-r[loop]) > DETECTION_THRESHOLD)
+            dynamic[loop] = true;//the current hit is dynamic
         else
             dynamic[loop] = false;//else its static
 
-    if ( dynamic[loop] ) {
+        if ( dynamic[loop] ) {
 
-        ROS_INFO("hit[%i](%f, %f) is dynamic", loop, current_scan[loop].x, current_scan[loop].y);
+            ROS_INFO("hit[%i](%f, %f) is dynamic", loop, current_scan[loop].x, current_scan[loop].y);
 
-        //display in blue of hits that are dynamic
-        display[nb_pts] = current_scan[loop];
+            //display in blue of hits that are dynamic
+            display[nb_dynamic_pts] = current_scan[loop];
 
-        colors[nb_pts].r = 0;
-        colors[nb_pts].g = 0;
-        colors[nb_pts].b = 1;
-        colors[nb_pts].a = 1.0;
+            colors[nb_dynamic_pts].r = 1;
+            colors[nb_dynamic_pts].g = 0;
+            colors[nb_dynamic_pts].b = 1;
+            colors[nb_dynamic_pts].a = 1.0;
 
-        nb_pts++;
-    }
+            nb_dynamic_pts++;
+        }
     }
     ROS_INFO("motion detected");
 }
 
 void DetectMotion::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan) {
 
-    init_laser = true;
+    new_laser = true;
     // store the important data related to laserscanner
     range_min = scan->range_min;
     range_max = scan->range_max;
@@ -177,7 +183,7 @@ void DetectMotion::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan) {
     }
 }
 
-void DetectMotion::robot_movingCallback(const std_msgs::Bool::ConstPtr& state) {
+void DetectMotion::robotMovingCallback(const std_msgs::Bool::ConstPtr& state) {
     init_robot = true;
     current_robot_moving = state->data;
 }
@@ -253,8 +259,8 @@ void DetectMotion::populateMarkerTopic(){
 
     marker.color.a = 1.0;
 
-    //ROS_INFO("%i points to display", nb_pts);
-    for (int loop = 0; loop < nb_pts; loop++) {
+    //ROS_INFO("%i points to display", nb_dynamic_pts);
+    for (int loop = 0; loop < nb_dynamic_pts; loop++) {
             geometry_msgs::Point p;
             std_msgs::ColorRGBA c;
 

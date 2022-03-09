@@ -34,15 +34,80 @@
  ***********************************************************************************************************************
  */
 
-#include <tutorial_ros/perform_clustering.h>
+// Signal handling
+#include <signal.h>
 
-int main(int argc, char **argv){
+#include "ros/ros.h"
+#include "geometry_msgs/Point.h"
+#include "std_msgs/Float32.h"
+#include "std_msgs/Bool.h"
+#include "nav_msgs/Odometry.h"
 
-    ros::init(argc, argv, "perform_clustering_node");
-    ros::NodeHandle nh("~");
-    robair::PerformClustering basic_object(nh);
+namespace robair{
 
-    ros::spin();
+class RobotMoving{
+public:
+    /**
+     * \brief Default Class Constructor.
+     */
+    RobotMoving(ros::NodeHandle& nh);
 
-    return 0;
+    /**
+     * \brief Default Class Destructor.
+     */
+    virtual ~RobotMoving(){}
+
+    /**
+     * \brief Odometry Callback.
+     */
+    void odomCallback(const nav_msgs::Odometry::ConstPtr &o);
+
+    /**
+     * \brief Data Processing.
+     */
+    void update();
+
+private:
+    /**
+     * \brief Node Handler.
+     */
+    ros::NodeHandle nh_;
+    /**
+     * \brief Robot Moving Publisher (to communicate with person_detector).
+     */
+    ros::Publisher pub_robot_moving_;
+    /**
+     * \brief Odometry Subscriber (to communicate with odometry).
+     */
+    ros::Subscriber sub_odometry_;
+    /**
+     * \brief TODO.
+     */
+    geometry_msgs::Point not_moving_position;
+    /**
+     * \brief TODO.
+     */
+    geometry_msgs::Point position;
+    /**
+     * \brief TODO.
+     */
+    float orientation;
+    /**
+     * \brief TODO.
+     */
+    float not_moving_orientation;
+
+    /**
+     * \brief TODO.
+     */
+    int count;
+    /**
+     * \brief TODO.
+     */
+    bool moving;
+    /**
+     * \brief Odometry Data Availablity flag.
+     */
+    bool new_odom;
+};
 }

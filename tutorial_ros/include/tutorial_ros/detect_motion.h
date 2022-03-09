@@ -82,7 +82,7 @@ public:
     /**
      * \brief Laser Data Processing.
      */  
-    void robot_movingCallback(const std_msgs::Bool::ConstPtr &state);
+    void robotMovingCallback(const std_msgs::Bool::ConstPtr &state);
 
     /**
      * \brief Laser Data Processing.
@@ -134,33 +134,33 @@ private:
     geometry_msgs::Point current_scan[1000];
 
     /**
-     * \brief TODO.
+     * \brief Robot Motion Initialization Flag.
      */
     bool init_robot;
     /**
-     * \brief TODO.
+     * \brief Flag to Check if Background is Stored.
      */
     bool stored_background;
     /**
-     * \brief TODO.
+     * \brief Background Points.
      */
     float background[1000];
     /**
-     * \brief TODO.
+     * \brief Dynamic Points.
      */
     bool dynamic[1000];
     /**
-     * \brief TODO.
+     * \brief Robot Motion Flag.
      */
     bool current_robot_moving;
     /**
-     * \brief TODO.
+     * \brief Robot Was in Motion Before Flag.
      */
     bool previous_robot_moving;
     /**
-     * \brief Number of Points.
+     * \brief Number of Dynamic Points.
      */
-    int nb_pts;
+    int nb_dynamic_pts;
     /**
      * \brief Laser Points to Display.
      */ 
@@ -172,11 +172,7 @@ private:
     /**
      * \brief To Check if New Laser Data is Available.
      */
-    bool init_laser;
-    /**
-     * \brief TODO.
-     */
-    bool first;
+    bool new_laser;
 };
 }
 

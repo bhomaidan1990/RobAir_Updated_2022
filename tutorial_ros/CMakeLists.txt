@@ -39,6 +39,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   visualization_msgs
   geometry_msgs
+  nav_msgs
   genmsg
   tf
 )
@@ -55,6 +56,7 @@ catkin_package(
     sensor_msgs
     visualization_msgs
     geometry_msgs
+    nav_msgs
     genmsg
     tf
   # DEPENDS
@@ -92,6 +94,22 @@ target_link_libraries(${target_name}
 #  laser_graphical_display
 #------------------------------------
 set(target_name laser_graphical_display)
+
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
+)
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
+  ${catkin_LIBRARIES}
+)
+
+#------------------------------------
+#  robot_moving
+#------------------------------------
+set(target_name robot_moving)
 
 ## Declare a C++ executable
 add_executable(${target_name}

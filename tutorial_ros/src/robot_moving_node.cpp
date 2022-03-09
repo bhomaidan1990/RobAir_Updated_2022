@@ -34,13 +34,16 @@
  ***********************************************************************************************************************
  */
 
-#include <tutorial_ros/perform_clustering.h>
+#include <tutorial_ros/robot_moving.h>
 
 int main(int argc, char **argv){
 
-    ros::init(argc, argv, "perform_clustering_node");
+    ros::init(argc, argv, "robot_moving_node");
     ros::NodeHandle nh("~");
-    robair::PerformClustering basic_object(nh);
+
+    ROS_INFO("(robot_moving_node) check if the robot is moving or not");
+    
+    robair::RobotMoving basic_object(nh);
 
     ros::spin();
 
