@@ -50,6 +50,8 @@ catkin_package(
     ${PROJECT_NAME}_laser_text_display
     ${PROJECT_NAME}_laser_graphical_display
     ${PROJECT_NAME}_detect_motion
+    ${PROJECT_NAME}_perform_clustering
+    ${PROJECT_NAME}_rotation_done
   CATKIN_DEPENDS
     roscpp
   # DEPENDS
@@ -133,7 +135,7 @@ set_target_properties(${target_name}_exe
     OUTPUT_NAME "laser_text_display"
 )
 #===========================================================
-# Build targets (for the laser_text_display)
+# Build targets (for the laser_graphical_display)
 #===========================================================
 set(target_name ${PROJECT_NAME}_laser_graphical_display)
 
@@ -261,6 +263,135 @@ set_target_properties(${target_name}_exe
     OUTPUT_NAME "detect_motion"
 )
 #===========================================================
+# Build targets (for the perform_clustering)
+#===========================================================
+set(target_name ${PROJECT_NAME}_perform_clustering)
+
+#-----------------------------
+# Library target
+#-----------------------------
+set(
+  src_files
+    src/perform_clustering.cpp
+)
+
+add_library(${target_name} ${src_files})
+
+target_include_directories(${target_name} PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>"
+  "${catkin_INCLUDE_DIRS}"
+)
+
+target_link_libraries(${target_name} PUBLIC
+  ${catkin_LIBRARIES}
+)
+
+target_compile_features(${target_name} PRIVATE cxx_std_14)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(${target_name} PRIVATE -Wall -Wextra -Wpedantic)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  target_compile_options(${target_name} PRIVATE /W4)
+endif()
+
+#-----------------------------
+# Executable target
+#-----------------------------
+set(
+  src_files
+    src/perform_clustering_node.cpp
+)
+
+add_executable(${target_name}_exe ${src_files})
+
+target_include_directories(${target_name}_exe PRIVATE
+  "${catkin_INCLUDE_DIRS}"
+)
+
+target_link_libraries(${target_name}_exe PRIVATE
+  ${catkin_LIBRARIES}
+  ${target_name}
+)
+
+target_compile_features(${target_name}_exe PRIVATE cxx_std_14)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(${target_name}_exe PRIVATE -Wall -Wextra -Wpedantic)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  target_compile_options(${target_name}_exe PRIVATE /W4)
+endif()
+
+set_target_properties(${target_name}_exe
+  PROPERTIES
+    OUTPUT_NAME "perform_clustering"
+)
+
+#===========================================================
+# Build targets (for the rotation_done)
+#===========================================================
+set(target_name ${PROJECT_NAME}_rotation_done)
+
+#-----------------------------
+# Library target
+#-----------------------------
+set(
+  src_files
+    src/rotation_done.cpp
+)
+
+add_library(${target_name} ${src_files})
+
+target_include_directories(${target_name} PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>"
+  "${catkin_INCLUDE_DIRS}"
+)
+
+target_link_libraries(${target_name} PUBLIC
+  ${catkin_LIBRARIES}
+)
+
+target_compile_features(${target_name} PRIVATE cxx_std_14)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(${target_name} PRIVATE -Wall -Wextra -Wpedantic)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  target_compile_options(${target_name} PRIVATE /W4)
+endif()
+
+#-----------------------------
+# Executable target
+#-----------------------------
+set(
+  src_files
+    src/rotation_done_node.cpp
+)
+
+add_executable(${target_name}_exe ${src_files})
+
+target_include_directories(${target_name}_exe PRIVATE
+  "${catkin_INCLUDE_DIRS}"
+)
+
+target_link_libraries(${target_name}_exe PRIVATE
+  ${catkin_LIBRARIES}
+  ${target_name}
+)
+
+target_compile_features(${target_name}_exe PRIVATE cxx_std_14)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(${target_name}_exe PRIVATE -Wall -Wextra -Wpedantic)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  target_compile_options(${target_name}_exe PRIVATE /W4)
+endif()
+
+set_target_properties(${target_name}_exe
+  PROPERTIES
+    OUTPUT_NAME "rotation_done"
+)
+#===========================================================
 # Install
 #===========================================================
 install(
@@ -273,6 +404,12 @@ install(
     
     ${PROJECT_NAME}_detect_motion
     ${PROJECT_NAME}_detect_motion_exe
+    
+    ${PROJECT_NAME}_perform_clustering
+    ${PROJECT_NAME}_perform_clustering_exe
+
+    ${PROJECT_NAME}_rotation_done
+    ${PROJECT_NAME}_rotation_done_exe
 
   ARCHIVE DESTINATION "${CATKIN_PACKAGE_LIB_DESTINATION}"
   LIBRARY DESTINATION "${CATKIN_PACKAGE_LIB_DESTINATION}"
