@@ -51,7 +51,7 @@ namespace robair
 LaserGraphicalDisplay::LaserGraphicalDisplay(ros::NodeHandle& nh):
   nh_(nh) 
   {
-    sub_scan_ = nh_.subscribe("scan", 1, &LaserGraphicalDisplay::scanCallback, this);
+    sub_scan_ = nh_.subscribe("/scan", 1, &LaserGraphicalDisplay::scanCallback, this);
     // Preparing a topic to publish our results. This will be used by the visualization tool rviz
     pub_laser_graphical_display_marker_ = nh_.advertise<visualization_msgs::Marker>("laser_graphical_display_marker", 1); 
 

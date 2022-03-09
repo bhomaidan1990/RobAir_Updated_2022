@@ -4,16 +4,16 @@
   <arg name="path" default="/home/belal/ros1_ws/RobAir_TP/test/src/Data/" />
   <arg name="file_1" default="2017-09-07-16-55-12" />
   <arg name="file_2" default="2017-09-07-16-57-44" />
-  <!-- You can add the file you want! -->
+  <!-- You can add the files you want! -->
   <!-- <arg name="file_2" default="2017-09-07-16-57-44" /> -->
-
-  <node pkg="rosbag" type="play" name="player" output="screen" args="--clock $(arg path)$(arg file_1).bag"/>
   
+  <node pkg="rosbag" type="play" name="player" output="screen" args="--clock $(arg path)$(arg file_1).bag"/>
+ 
   <node type="laser_text_display" name="laser_text_display" pkg="tutorial_ros"/>
-  <node type="laser_graphical_display" name="laser_graphical_display" pkg="tutorial_ros"/>
-  <node type="detect_motion" name="detect_motion" pkg="tutorial_ros"/>
-  <node type="perform_clustering" name="perform_clustering" pkg="tutorial_ros"/>
-  <node type="rotation_done" name="rotation_done" pkg="tutorial_ros"/>
+  <!-- <node type="laser_graphical_display" name="laser_graphical_display" pkg="tutorial_ros"/> -->
+  <!-- <node type="detect_motion" name="detect_motion" pkg="tutorial_ros"/> -->
+  <!-- <node type="perform_clustering" name="perform_clustering" pkg="tutorial_ros"/> -->
+  <!-- <node type="rotation_done" name="rotation_done" pkg="tutorial_ros"/> -->
 
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find tutorial_ros)/config/rviz_config.rviz" />
 

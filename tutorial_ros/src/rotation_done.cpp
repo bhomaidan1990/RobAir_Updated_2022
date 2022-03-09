@@ -40,12 +40,18 @@
 #include <tutorial_ros/rotation_done.h>
 
 namespace robair{
+/***********************************************************************************************************************
+ * Class definitions: RotationDone
+ */
 
+/***********************************************************
+ * Primary methods
+ */
 RotationDone::RotationDone(ros::NodeHandle& nh):
   nh_(nh) 
   {
     // communication with odometry
-    sub_odometry_ = nh_.subscribe("odom", 1, &RotationDone::odomCallback, this);
+    sub_odometry_ = nh_.subscribe("/odom", 1, &RotationDone::odomCallback, this);
 
     init_odom = false;
     first = true;

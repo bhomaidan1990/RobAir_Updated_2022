@@ -44,11 +44,17 @@
 
 namespace robair
 {
+/***********************************************************************************************************************
+ * Class definitions: PerformClustering
+ */
 
+/***********************************************************
+ * Primary methods
+ */
 PerformClustering::PerformClustering(ros::NodeHandle& nh):
   nh_(nh) 
   {
-    sub_scan_ = nh_.subscribe("scan", 1, &PerformClustering::scanCallback, this);
+    sub_scan_ = nh_.subscribe("/scan", 1, &PerformClustering::scanCallback, this);
     // Preparing a topic to publish our results. This will be used by the visualization tool rviz
     pub_perform_clustering_marker_ = nh_.advertise<visualization_msgs::Marker>("perform_clustering_marker", 1);
 

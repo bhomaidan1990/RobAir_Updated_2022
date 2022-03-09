@@ -52,8 +52,7 @@ namespace robair
 LaserTextDisplay::LaserTextDisplay(ros::NodeHandle& nh):
   nh_(nh) 
   {
-    sub_scan_ = nh_.subscribe("scan", 1, &LaserTextDisplay::scanCallback, this);
-
+    sub_scan_ = nh_.subscribe("/scan", 1, &LaserTextDisplay::scanCallback, this);
     new_laser = false;
 
     //INFINTE LOOP TO COLLECT LASER DATA AND PROCESS THEM
@@ -68,7 +67,6 @@ LaserTextDisplay::LaserTextDisplay(ros::NodeHandle& nh):
 }
   
 void LaserTextDisplay::update() {
-
     // we wait for new data of the laser
     if ( new_laser )
     {

@@ -53,8 +53,8 @@ namespace robair{
 DetectMotion::DetectMotion(ros::NodeHandle& nh):
   nh_(nh) 
   {
-    sub_scan_ = nh_.subscribe("scan", 1, &DetectMotion::scanCallback, this);
-    sub_robot_moving_ = nh_.subscribe("robot_moving", 1, &DetectMotion::robot_movingCallback, this);
+    sub_scan_ = nh_.subscribe("/scan", 1, &DetectMotion::scanCallback, this);
+    sub_robot_moving_ = nh_.subscribe("/robot_moving", 1, &DetectMotion::robot_movingCallback, this);
     // Preparing a topic to publish our results. This will be used by the visualization tool rviz
     pub_detect_motion_marker_ = nh_.advertise<visualization_msgs::Marker>("detect_motion_marker", 1); 
 
