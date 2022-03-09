@@ -46,382 +46,109 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS
     include
-  LIBRARIES
-    ${PROJECT_NAME}_laser_text_display
-    ${PROJECT_NAME}_laser_graphical_display
-    ${PROJECT_NAME}_detect_motion
-    ${PROJECT_NAME}_perform_clustering
-    ${PROJECT_NAME}_rotation_done
+  # LIBRARIES
+    ## Libraries to be built
   CATKIN_DEPENDS
     roscpp
+    rospy
+    std_msgs
+    sensor_msgs
+    visualization_msgs
+    geometry_msgs
+    genmsg
+    tf
   # DEPENDS
     ## External Libraries
 )
 
 #===========================================================
-# Settings
+# Build
 #===========================================================
-if(NOT DEFINED BUILD_SHARED_LIBS)
-  set(BUILD_SHARED_LIBS ON)
-endif()
 
-if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
-  message(STATUS "${PROJECT_NAME}: Defaulting build type to RelWithDebInfo")
-  set(CMAKE_BUILD_TYPE RelWithDebInfo)
-endif()
-
-#===========================================================
-# Build targets (for the laser_text_display)
-#===========================================================
-set(target_name ${PROJECT_NAME}_laser_text_display)
-
-#-----------------------------
-# Library target
-#-----------------------------
-set(
-  src_files
-    src/laser_text_display.cpp
+## Specify additional locations of header files
+## Your package locations should be listed before other locations
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
 )
 
-add_library(${target_name} ${src_files})
+#------------------------------------
+#  laser_text_display
+#------------------------------------
+set(target_name laser_text_display)
 
-target_include_directories(${target_name} PUBLIC
-  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-  "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>"
-  "${catkin_INCLUDE_DIRS}"
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
 )
 
-target_link_libraries(${target_name} PUBLIC
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
   ${catkin_LIBRARIES}
 )
 
-target_compile_features(${target_name} PRIVATE cxx_std_14)
+#------------------------------------
+#  laser_graphical_display
+#------------------------------------
+set(target_name laser_graphical_display)
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(${target_name} PRIVATE -Wall -Wextra -Wpedantic)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(${target_name} PRIVATE /W4)
-endif()
-
-#-----------------------------
-# Executable target
-#-----------------------------
-set(
-  src_files
-    src/laser_text_display_node.cpp
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
 )
 
-add_executable(${target_name}_exe ${src_files})
-
-target_include_directories(${target_name}_exe PRIVATE
-  "${catkin_INCLUDE_DIRS}"
-)
-
-target_link_libraries(${target_name}_exe PRIVATE
-  ${catkin_LIBRARIES}
-  ${target_name}
-)
-
-target_compile_features(${target_name}_exe PRIVATE cxx_std_14)
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(${target_name}_exe PRIVATE -Wall -Wextra -Wpedantic)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(${target_name}_exe PRIVATE /W4)
-endif()
-
-set_target_properties(${target_name}_exe
-  PROPERTIES
-    OUTPUT_NAME "laser_text_display"
-)
-#===========================================================
-# Build targets (for the laser_graphical_display)
-#===========================================================
-set(target_name ${PROJECT_NAME}_laser_graphical_display)
-
-#-----------------------------
-# Library target
-#-----------------------------
-set(
-  src_files
-    src/laser_graphical_display.cpp
-)
-
-add_library(${target_name} ${src_files})
-
-target_include_directories(${target_name} PUBLIC
-  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-  "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>"
-  "${catkin_INCLUDE_DIRS}"
-)
-
-target_link_libraries(${target_name} PUBLIC
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
   ${catkin_LIBRARIES}
 )
 
-target_compile_features(${target_name} PRIVATE cxx_std_14)
+#------------------------------------
+#  detect_motion
+#------------------------------------
+set(target_name detect_motion)
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(${target_name} PRIVATE -Wall -Wextra -Wpedantic)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(${target_name} PRIVATE /W4)
-endif()
-
-#-----------------------------
-# Executable target
-#-----------------------------
-set(
-  src_files
-    src/laser_graphical_display_node.cpp
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
 )
 
-add_executable(${target_name}_exe ${src_files})
-
-target_include_directories(${target_name}_exe PRIVATE
-  "${catkin_INCLUDE_DIRS}"
-)
-
-target_link_libraries(${target_name}_exe PRIVATE
-  ${catkin_LIBRARIES}
-  ${target_name}
-)
-
-target_compile_features(${target_name}_exe PRIVATE cxx_std_14)
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(${target_name}_exe PRIVATE -Wall -Wextra -Wpedantic)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(${target_name}_exe PRIVATE /W4)
-endif()
-
-set_target_properties(${target_name}_exe
-  PROPERTIES
-    OUTPUT_NAME "laser_graphical_display"
-)
-#===========================================================
-# Build targets (for the detect_motion)
-#===========================================================
-set(target_name ${PROJECT_NAME}_detect_motion)
-
-#-----------------------------
-# Library target
-#-----------------------------
-set(
-  src_files
-    src/detect_motion.cpp
-)
-
-add_library(${target_name} ${src_files})
-
-target_include_directories(${target_name} PUBLIC
-  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-  "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>"
-  "${catkin_INCLUDE_DIRS}"
-)
-
-target_link_libraries(${target_name} PUBLIC
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
   ${catkin_LIBRARIES}
 )
 
-target_compile_features(${target_name} PRIVATE cxx_std_14)
+#------------------------------------
+#  perform_clustering
+#------------------------------------
+set(target_name perform_clustering)
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(${target_name} PRIVATE -Wall -Wextra -Wpedantic)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(${target_name} PRIVATE /W4)
-endif()
-
-#-----------------------------
-# Executable target
-#-----------------------------
-set(
-  src_files
-    src/detect_motion_node.cpp
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
 )
 
-add_executable(${target_name}_exe ${src_files})
-
-target_include_directories(${target_name}_exe PRIVATE
-  "${catkin_INCLUDE_DIRS}"
-)
-
-target_link_libraries(${target_name}_exe PRIVATE
-  ${catkin_LIBRARIES}
-  ${target_name}
-)
-
-target_compile_features(${target_name}_exe PRIVATE cxx_std_14)
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(${target_name}_exe PRIVATE -Wall -Wextra -Wpedantic)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(${target_name}_exe PRIVATE /W4)
-endif()
-
-set_target_properties(${target_name}_exe
-  PROPERTIES
-    OUTPUT_NAME "detect_motion"
-)
-#===========================================================
-# Build targets (for the perform_clustering)
-#===========================================================
-set(target_name ${PROJECT_NAME}_perform_clustering)
-
-#-----------------------------
-# Library target
-#-----------------------------
-set(
-  src_files
-    src/perform_clustering.cpp
-)
-
-add_library(${target_name} ${src_files})
-
-target_include_directories(${target_name} PUBLIC
-  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-  "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>"
-  "${catkin_INCLUDE_DIRS}"
-)
-
-target_link_libraries(${target_name} PUBLIC
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
   ${catkin_LIBRARIES}
 )
 
-target_compile_features(${target_name} PRIVATE cxx_std_14)
+#------------------------------------
+#  rotation_done
+#------------------------------------
+set(target_name rotation_done)
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(${target_name} PRIVATE -Wall -Wextra -Wpedantic)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(${target_name} PRIVATE /W4)
-endif()
-
-#-----------------------------
-# Executable target
-#-----------------------------
-set(
-  src_files
-    src/perform_clustering_node.cpp
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
 )
 
-add_executable(${target_name}_exe ${src_files})
-
-target_include_directories(${target_name}_exe PRIVATE
-  "${catkin_INCLUDE_DIRS}"
-)
-
-target_link_libraries(${target_name}_exe PRIVATE
-  ${catkin_LIBRARIES}
-  ${target_name}
-)
-
-target_compile_features(${target_name}_exe PRIVATE cxx_std_14)
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(${target_name}_exe PRIVATE -Wall -Wextra -Wpedantic)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(${target_name}_exe PRIVATE /W4)
-endif()
-
-set_target_properties(${target_name}_exe
-  PROPERTIES
-    OUTPUT_NAME "perform_clustering"
-)
-
-#===========================================================
-# Build targets (for the rotation_done)
-#===========================================================
-set(target_name ${PROJECT_NAME}_rotation_done)
-
-#-----------------------------
-# Library target
-#-----------------------------
-set(
-  src_files
-    src/rotation_done.cpp
-)
-
-add_library(${target_name} ${src_files})
-
-target_include_directories(${target_name} PUBLIC
-  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-  "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>"
-  "${catkin_INCLUDE_DIRS}"
-)
-
-target_link_libraries(${target_name} PUBLIC
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
   ${catkin_LIBRARIES}
 )
-
-target_compile_features(${target_name} PRIVATE cxx_std_14)
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(${target_name} PRIVATE -Wall -Wextra -Wpedantic)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(${target_name} PRIVATE /W4)
-endif()
-
-#-----------------------------
-# Executable target
-#-----------------------------
-set(
-  src_files
-    src/rotation_done_node.cpp
-)
-
-add_executable(${target_name}_exe ${src_files})
-
-target_include_directories(${target_name}_exe PRIVATE
-  "${catkin_INCLUDE_DIRS}"
-)
-
-target_link_libraries(${target_name}_exe PRIVATE
-  ${catkin_LIBRARIES}
-  ${target_name}
-)
-
-target_compile_features(${target_name}_exe PRIVATE cxx_std_14)
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(${target_name}_exe PRIVATE -Wall -Wextra -Wpedantic)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(${target_name}_exe PRIVATE /W4)
-endif()
-
-set_target_properties(${target_name}_exe
-  PROPERTIES
-    OUTPUT_NAME "rotation_done"
-)
 #===========================================================
-# Install
-#===========================================================
-install(
-  TARGETS
-    ${PROJECT_NAME}_laser_text_display
-    ${PROJECT_NAME}_laser_text_display_exe
-
-    ${PROJECT_NAME}_laser_graphical_display
-    ${PROJECT_NAME}_laser_graphical_display_exe
-    
-    ${PROJECT_NAME}_detect_motion
-    ${PROJECT_NAME}_detect_motion_exe
-    
-    ${PROJECT_NAME}_perform_clustering
-    ${PROJECT_NAME}_perform_clustering_exe
-
-    ${PROJECT_NAME}_rotation_done
-    ${PROJECT_NAME}_rotation_done_exe
-
-  ARCHIVE DESTINATION "${CATKIN_PACKAGE_LIB_DESTINATION}"
-  LIBRARY DESTINATION "${CATKIN_PACKAGE_LIB_DESTINATION}"
-  RUNTIME DESTINATION "${CATKIN_PACKAGE_BIN_DESTINATION}"
-)
-
-install(
-  DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION "${CATKIN_PACKAGE_INCLUDE_DESTINATION}"
-)
-
-install(
-  DIRECTORY config launch
-  DESTINATION "${CATKIN_PACKAGE_SHARE_DESTINATION}"
-)
