@@ -15,13 +15,11 @@
   <group> 
   <!-- ns="$(arg namespace)" -->
     <node pkg="rosbag" type="play" name="player" output="screen" args="--clock $(arg bags_path)$(arg file_3).bag"/>
-  
-    <!-- <node type="laser_text_display" name="laser_text_display"  output="screen" pkg="tutorial_ros" /> -->
-    <!-- <node type="laser_graphical_display" name="laser_graphical_display" pkg="tutorial_ros"/>
+    <node type="laser_text_display" name="laser_text_display"  output="screen" pkg="tutorial_ros" />
+    <node type="laser_graphical_display" name="laser_graphical_display" pkg="tutorial_ros"/>
     <node type="robot_moving" name="robot_moving" pkg="tutorial_ros"/>
-    <node type="detect_motion" name="detect_motion" pkg="tutorial_ros"/> -->
+    <node type="detect_motion" name="detect_motion" pkg="tutorial_ros"/>
     <node type="perform_clustering" name="perform_clustering" pkg="tutorial_ros"/>
-    <!-- <node type="rotation_done" name="rotation_done" pkg="tutorial_ros"/> -->
   </group>
 
   <!-- RViz -->
