@@ -38,13 +38,9 @@
 #ifndef ROBAIR_ROBOT_MOVING_H
 #define ROBAIR_ROBOT_MOVING_H
 
-// Signal handling
-#include <signal.h>
+
 #include "ros/ros.h"
 #include "geometry_msgs/Point.h"
-#include "std_msgs/Float32.h"
-#include "std_msgs/Bool.h"
-#include "nav_msgs/Odometry.h"
 
 namespace robair{
 
@@ -55,11 +51,11 @@ public:
      */
     RobotMoving(ros::NodeHandle& nh);
 
-    /**
-     * \brief Odometry Callback.
-     */
-    void odomCallback(const nav_msgs::Odometry::ConstPtr &o);
-
+    // /**
+    //  * \brief Initialization.
+    //  */
+    // bool init(ros::NodeHandle& nh);
+    
     /**
      * \brief Data Processing.
      */
@@ -74,22 +70,12 @@ private:
      * \brief Robot Moving Publisher (to communicate with person_detector).
      */
     ros::Publisher pub_robot_moving_;
-    /**
-     * \brief Odometry Subscriber (to communicate with odometry).
-     */
-    ros::Subscriber sub_odometry_;
+
     /**
      * \brief TODO.
      */
     geometry_msgs::Point not_moving_position;
-    /**
-     * \brief TODO.
-     */
-    geometry_msgs::Point position;
-    /**
-     * \brief TODO.
-     */
-    float orientation;
+
     /**
      * \brief TODO.
      */
@@ -103,10 +89,7 @@ private:
      * \brief TODO.
      */
     bool moving;
-    /**
-     * \brief Odometry Data Availablity flag.
-     */
-    bool new_odom;
+
 };
 }
 

@@ -34,14 +34,8 @@
  ***********************************************************************************************************************
  */
 
+#include <tutorial_ros/utility.h>
 #include <tutorial_ros/robot_moving.h>
-#include <tf/transform_datatypes.h>
-#include <tf/transform_listener.h>
-#include "std_srvs/Empty.h"
-#include "tf/transform_listener.h"
-#include "tf/transform_broadcaster.h"
-#include "message_filters/subscriber.h"
-#include "tf/message_filter.h"
 
 int nb_static = 5;
 
@@ -56,11 +50,13 @@ namespace robair{
 RobotMoving::RobotMoving(ros::NodeHandle& nh):
   nh_(nh) 
   {
+    // init(nh_);
+    // name_space_ = "/follow_me";
     // communication with person_detector
     pub_robot_moving_ = nh_.advertise<std_msgs::Bool>("robot_moving", 1);   
 
     // communication with odometry
-    sub_odometry_ = nh_.subscribe("/odom", 1, &RobotMoving::odomCallback, this);
+    sub_odometry_ = nh_.subscribe("/odom", 1, &odomCallback);
 
     moving = 1;
     count = 0;
@@ -76,15 +72,6 @@ RobotMoving::RobotMoving(ros::NodeHandle& nh):
         update();
         r.sleep();
     }
-
-}
-
-void RobotMoving::odomCallback(const nav_msgs::Odometry::ConstPtr& o) {
-
-    new_odom = true;
-    position.x = o->pose.pose.position.x;
-    position.y = o->pose.pose.position.y;
-    orientation = tf::getYaw(o->pose.pose.orientation);
 
 }
 

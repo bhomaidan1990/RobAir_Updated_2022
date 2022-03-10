@@ -106,8 +106,9 @@ void PerformClustering::perfomClustering() {
         //if euclidian DISTANCE between the previous hit and the current one is higher than "CLUSTER_THRESHOLD"
         if(distancePoints(current_scan[loop], current_scan[loop-1]) > CLUSTER_THRESHOLD)
         {
-            //the previous hit is the end of the current cluster
-            //we end the current cluster
+            nb_cluster++;
+            // the previous hit is the end of the current cluster
+            // we end the current cluster
             end = loop-1;
 
             //graphical display of the end of the current cluster in red
@@ -151,15 +152,10 @@ void PerformClustering::perfomClustering() {
         }
 
     //Dont forget to update and display the last cluster
-    populateMarkerTopic(pub_perform_clustering_marker_, nb_pts, display, colors);
-    ROS_INFO("clustering performed");
-}
-
-// Distance between two points
-float PerformClustering::distancePoints(geometry_msgs::Point pa, geometry_msgs::Point pb) {
-
-    return sqrt(pow((pa.x-pb.x),2.0) + pow((pa.y-pb.y),2.0));
-
+    if(nb_pts>0){
+        populateMarkerTopic(pub_perform_clustering_marker_, nb_pts, display, colors);
+        ROS_INFO("clustering performed");
+    }
 }
 
 }

@@ -91,8 +91,8 @@ void LaserGraphicalDisplay::update() {
 
             nb_pts++;
         }
-
-        populateMarkerTopic(pub_laser_graphical_display_marker_, nb_pts, display, colors);
+        if(nb_pts>0)
+            populateMarkerTopic(pub_laser_graphical_display_marker_, nb_pts, display, colors);
     }
 }
 

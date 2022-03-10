@@ -69,14 +69,6 @@ public:
      */
     void perfomClustering();
 
-
-    /**
-     * \brief Eucledian Distance Between Two Points.
-     *
-     * \return float Eucledian Distance in Meters.
-     */
-    float distancePoints(geometry_msgs::Point pa, geometry_msgs::Point pb);
-
 private:
     /**
      * \brief Node Handler.

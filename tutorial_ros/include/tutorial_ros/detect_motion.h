@@ -73,11 +73,6 @@ public:
      */  
     void motionDetection();
 
-    /**
-     * \brief Laser Data Processing.
-     */  
-    void robotMovingCallback(const std_msgs::Bool::ConstPtr &state);
-
 private:
     /**
      * \brief Node Handler.
@@ -95,11 +90,6 @@ private:
     ros::Publisher pub_detect_motion_marker_;
 
     /**
-     * \brief Robot Motion Initialization Flag.
-     */
-    bool init_robot;
-
-    /**
      * \brief Flag to Check if Background is Stored.
      */
     bool stored_background;
@@ -113,11 +103,6 @@ private:
      * \brief Dynamic Points.
      */
     bool dynamic[1000];
-
-    /**
-     * \brief Robot Motion Flag.
-     */
-    bool current_robot_moving;
 
     /**
      * \brief Robot Was in Motion Before Flag.

@@ -56,7 +56,7 @@ DetectMotion::DetectMotion(ros::NodeHandle& nh):
       // name_space_ = "/tutorial_ros";
       sub_scan_ = nh_.subscribe("/scan", 1, &scanCallback);
       // TODO: check topic namespace!
-      sub_robot_moving_ = nh_.subscribe("/robot_moving/robot_moving", 1, &DetectMotion::robotMovingCallback, this);
+      sub_robot_moving_ = nh_.subscribe("/tutorial_ros/robot_moving", 1, &robotMovingCallback);
       // Preparing a topic to publish our results. This will be used by the visualization tool rviz
       pub_detect_motion_marker_ = nh_.advertise<visualization_msgs::Marker>("detect_motion_marker", 1);
 
@@ -152,14 +152,10 @@ void DetectMotion::motionDetection() {
         }
     }
     //graphical display of the results
-
-    populateMarkerTopic(pub_detect_motion_marker_, nb_dynamic_pts, display, colors);
-    ROS_INFO("motion detected");
-}
-
-void DetectMotion::robotMovingCallback(const std_msgs::Bool::ConstPtr& state) {
-    init_robot = true;
-    current_robot_moving = state->data;
+    if (nb_dynamic_pts>0){
+        populateMarkerTopic(pub_detect_motion_marker_, nb_dynamic_pts, display, colors);
+        ROS_INFO("motion detected");
+        }
 }
 
 }
