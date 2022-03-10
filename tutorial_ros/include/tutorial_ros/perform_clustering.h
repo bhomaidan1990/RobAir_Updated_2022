@@ -34,11 +34,14 @@
  ***********************************************************************************************************************
  */
 
+#pragma once
+
+#ifndef ROBAIR_ROBOT_CLUSTERING_H
+#define ROBAIR_ROBOT_CLUSTERING_H
+
 #include "ros/ros.h"
-#include "sensor_msgs/LaserScan.h"
 #include "geometry_msgs/Point.h"
 #include "std_msgs/ColorRGBA.h"
-#include "std_msgs/Bool.h"
 
 namespace robair
 {
@@ -50,10 +53,10 @@ public:
      */
     PerformClustering(ros::NodeHandle& nh);
 
-    /**
-     * \brief Default Class Destructor.
-     */
-    virtual ~PerformClustering(){}
+    // /**
+    //  * \brief Initialization.
+    //  */
+    // bool init(ros::NodeHandle& nh);
 
     /**
      * \brief Laser Data Processing.
@@ -66,79 +69,35 @@ public:
      */
     void perfomClustering();
 
-    /**
-     * \brief Laser Scan Subscriber Callback.
-     * \param scan Laser Scan Message to Trigger the Callback.
-     *
-     */
-    void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan);
 
     /**
      * \brief Eucledian Distance Between Two Points.
      *
+     * \return float Eucledian Distance in Meters.
      */
     float distancePoints(geometry_msgs::Point pa, geometry_msgs::Point pb);
-
-    /**
-     * \brief Draws the Field of View and Other References.
-     *
-     */
-    void populateMarkerReference();
-
-    /**
-     * \brief Marker Topic Publisher.
-     *
-     */
-    void populateMarkerTopic();
 
 private:
     /**
      * \brief Node Handler.
      */
     ros::NodeHandle nh_;
-    /**
-     * \brief Laser Scan Subscriber.
-     */
-    ros::Subscriber sub_scan_;
+
     /**
      * \brief Graphical Display Marker Publisher.
      */
     ros::Publisher pub_perform_clustering_marker_;
-    /**
-     * \brief Number of Laser Scan Beams.
-     */
-    int nb_beams;
-    /**
-     * \brief Laser Min & Max Ranges.
-     */
-    float range_min, range_max;
-    /**
-     * \brief Angle Min, Max, Increment.
-     */
-    float angle_min, angle_max, angle_inc;
-    /**
-     * \brief Laser Radius & Angles.
-     */
-    float r[1000], theta[1000];
-    /**
-     * \brief Current Laser Points.
-     */
-    geometry_msgs::Point current_scan[1000];
-    /**
-     * \brief New Laser Rading Availabilty Flag.
-     */
-    bool new_laser;
-    /**
-     * \brief Number of Points.
-     */
-    int nb_pts;
+
     /**
      * \brief Laser Points to Display.
      */
     geometry_msgs::Point display[1000];
+
     /**
      * \brief Color Messages.
      */
     std_msgs::ColorRGBA colors[1000];
 };
 }
+
+#endif

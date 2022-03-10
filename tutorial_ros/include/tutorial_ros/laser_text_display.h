@@ -40,9 +40,6 @@
 #define ROBAIR_ROBOT_LASER_TEXT_DISPLAY_H
 
 #include "ros/ros.h"
-#include "sensor_msgs/LaserScan.h"
-#include "geometry_msgs/Point.h"
-#include "std_msgs/Bool.h"
 
 namespace robair
 {
@@ -52,56 +49,22 @@ public:
      * \brief Default Class Constructor.
      */
     LaserTextDisplay(ros::NodeHandle& nh);
-    /**
-     * \brief Default Class Destructor.
-     */
-    virtual ~LaserTextDisplay(){}
-    
-    /**
-     * \brief Laser Data Processing.
-     */    
-    void update();
+
+    // /**
+    //  * \brief Initialization.
+    //  */
+    // bool init(ros::NodeHandle& nh);
 
     /**
-     * \brief Laser Scan Subscriber Callback.
-     * \param scan Laser Scan Message to Trigger the Callback.
-     *
+     * \brief Laser Data Processing.
      */
-    void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan);
+    void update();
 
 private:
     /**
      * \brief Node Handler.
      */
     ros::NodeHandle nh_;
-    /**
-     * \brief Laser Scan Subscriber.
-     */
-    ros::Subscriber sub_scan_;
-    /**
-     * \brief Number of Laser Scan Beams.
-     */
-    int nb_beams;
-    /**
-     * \brief Laser Min & Max Ranges.
-     */
-    float range_min, range_max;
-    /**
-     * \brief Angle Min, Max, Increment.
-     */
-    float angle_min, angle_max, angle_inc;
-    /**
-     * \brief Laser Radius & Angles.
-     */
-    float r[1000], theta[1000];
-    /**
-     * \brief Current Laser Points.
-     */
-    geometry_msgs::Point current_scan[1000];
-    /**
-     * \brief New Laser Rading Availabilty Flag.
-     */
-    bool new_laser;
 };
 }
 

@@ -34,13 +34,11 @@
  ***********************************************************************************************************************
  */
 
-//Clustering Threshold
+//Clustering Threshold in meters
 #define CLUSTER_THRESHOLD 0.2
 
+#include <tutorial_ros/utility.h>
 #include <tutorial_ros/perform_clustering.h>
-#include "visualization_msgs/Marker.h"
-#include "ros/time.h"
-#include <cmath>
 
 namespace robair
 {
@@ -54,7 +52,9 @@ namespace robair
 PerformClustering::PerformClustering(ros::NodeHandle& nh):
   nh_(nh) 
   {
-    sub_scan_ = nh_.subscribe("/scan", 1, &PerformClustering::scanCallback, this);
+    // init(nh_);
+    // name_space_ = "/tutorial_ros";
+    sub_scan_ = nh_.subscribe("/scan", 1, &scanCallback);
     // Preparing a topic to publish our results. This will be used by the visualization tool rviz
     pub_perform_clustering_marker_ = nh_.advertise<visualization_msgs::Marker>("perform_clustering_marker", 1);
 
@@ -73,16 +73,11 @@ void PerformClustering::update() {
 
     // we wait for new data of the laser and of the robot_moving_node to perform laser processing
     if ( new_laser ) {
-        nb_pts = 0;
 
         ROS_INFO("\n");
         ROS_INFO("New data of laser received");
 
         perfomClustering();//to perform clustering
-
-        //graphical display of the results
-        populateMarkerTopic();
-
     }
 }
 
@@ -97,8 +92,8 @@ void PerformClustering::perfomClustering() {
 
     int start = 0; //to store the index of the start of current cluster
     int end;//to store the index of the end of the current cluster
-
-    //graphical display of the start of the current cluster in green
+    // graphical display of the start of the current cluster in green
+    int nb_pts = 0;
     display[nb_pts] = current_scan[start];
 
     colors[nb_pts].r = 0;
@@ -109,11 +104,11 @@ void PerformClustering::perfomClustering() {
 
     for( int loop=1; loop<nb_beams; loop++ )//loop over all the hits
         //if euclidian DISTANCE between the previous hit and the current one is higher than "CLUSTER_THRESHOLD"
-        {//the previous hit is the end of the current cluster
-            geometry_msgs::Point middle;
-
+        if(distancePoints(current_scan[loop], current_scan[loop-1]) > CLUSTER_THRESHOLD)
+        {
+            //the previous hit is the end of the current cluster
             //we end the current cluster
-            //end = ...;
+            end = loop-1;
 
             //graphical display of the end of the current cluster in red
             display[nb_pts] = current_scan[end];
@@ -124,7 +119,8 @@ void PerformClustering::perfomClustering() {
             colors[nb_pts].a = 1.0;
             nb_pts++;
 
-            //middle = ...; // compute the middle of the cluster
+            geometry_msgs::Point middle;
+            middle = current_scan[(start + end)/2]; // compute the middle of the cluster
 
             //textual display
             ROS_INFO("cluster[%i] (%f, %f): hit[%i](%f, %f) -> hit[%i](%f, %f)", nb_cluster, middle.x, middle.y, 
@@ -141,7 +137,7 @@ void PerformClustering::perfomClustering() {
 
             //the current hit is the start of the next cluster
             //we start the next cluster
-            //start = ...;
+            start = loop;
 
             //graphical display of the start of the current cluster in green
             display[nb_pts] = current_scan[start];
@@ -155,36 +151,8 @@ void PerformClustering::perfomClustering() {
         }
 
     //Dont forget to update and display the last cluster
-
+    populateMarkerTopic(pub_perform_clustering_marker_, nb_pts, display, colors);
     ROS_INFO("clustering performed");
-}
-
-void PerformClustering::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan) {
-
-    new_laser = true;
-    // store the important data related to laserscanner
-    range_min = scan->range_min;
-    range_max = scan->range_max;
-    angle_min = scan->angle_min;
-    angle_max = scan->angle_max;
-    angle_inc = scan->angle_increment;
-    nb_beams = ((-1 * angle_min) + angle_max)/angle_inc;
-
-    // store the range and the coordinates in cartesian framework of each hit
-    float beam_angle = angle_min;
-    for ( int loop=0 ; loop < nb_beams; loop++, beam_angle += angle_inc ) {
-        if ( ( scan->ranges[loop] < range_max ) && ( scan->ranges[loop] > range_min ) )
-            r[loop] = scan->ranges[loop];
-        else
-            r[loop] = range_max;
-        theta[loop] = beam_angle;
-
-        //transform the scan in cartesian framework
-        current_scan[loop].x = r[loop] * cos(beam_angle);
-        current_scan[loop].y = r[loop] * sin(beam_angle);
-        current_scan[loop].z = 0.0;
-    }
-
 }
 
 // Distance between two points
@@ -194,98 +162,4 @@ float PerformClustering::distancePoints(geometry_msgs::Point pa, geometry_msgs::
 
 }
 
-// Draw the field of view and other references
-void PerformClustering::populateMarkerReference() {
-
-    visualization_msgs::Marker references;
-
-    references.header.frame_id = "laser";
-    references.header.stamp = ros::Time::now();
-    references.ns = "example";
-    references.id = 1;
-    references.type = visualization_msgs::Marker::LINE_STRIP;
-    references.action = visualization_msgs::Marker::ADD;
-    references.pose.orientation.w = 1;
-
-    references.scale.x = 0.02;
-
-    references.color.r = 1.0f;
-    references.color.g = 1.0f;
-    references.color.b = 1.0f;
-    references.color.a = 1.0;
-    geometry_msgs::Point v;
-
-    v.x =  0.02 * cos(-2.356194);
-    v.y =  0.02 * sin(-2.356194);
-    v.z = 0.0;
-    references.points.push_back(v);
-
-    v.x =  5.6 * cos(-2.356194);
-    v.y =  5.6 * sin(-2.356194);
-    v.z = 0.0;
-    references.points.push_back(v);
-
-    float beam_angle = -2.356194 + 0.006136;
-    // first and last beam are already included
-    for (int i=0 ; i< 723; i++, beam_angle += 0.006136){
-        v.x =  5.6 * cos(beam_angle);
-        v.y =  5.6 * sin(beam_angle);
-        v.z = 0.0;
-        references.points.push_back(v);
-    }
-
-    v.x =  5.6 * cos(2.092350);
-    v.y =  5.6 * sin(2.092350);
-    v.z = 0.0;
-    references.points.push_back(v);
-
-    v.x =  0.02 * cos(2.092350);
-    v.y =  0.02 * sin(2.092350);
-    v.z = 0.0;
-    references.points.push_back(v);
-
-    pub_perform_clustering_marker_.publish(references);
-
-}
-
-void PerformClustering::populateMarkerTopic(){
-
-    visualization_msgs::Marker marker;
-
-    marker.header.frame_id = "laser";
-    marker.header.stamp = ros::Time::now();
-    marker.ns = "example";
-    marker.id = 0;
-    marker.type = visualization_msgs::Marker::POINTS;
-    marker.action = visualization_msgs::Marker::ADD;
-
-    marker.pose.orientation.w = 1;
-
-    marker.scale.x = 0.05;
-    marker.scale.y = 0.05;
-
-    marker.color.a = 1.0;
-
-    //ROS_INFO("%i points to display", nb_pts);
-    for (int loop = 0; loop < nb_pts; loop++) {
-            geometry_msgs::Point p;
-            std_msgs::ColorRGBA c;
-
-            p.x = display[loop].x;
-            p.y = display[loop].y;
-            p.z = display[loop].z;
-
-            c.r = colors[loop].r;
-            c.g = colors[loop].g;
-            c.b = colors[loop].b;
-            c.a = colors[loop].a;
-
-            //ROS_INFO("(%f, %f, %f) with rgba (%f, %f, %f, %f)", p.x, p.y, p.z, c.r, c.g, c.b, c.a);
-            marker.points.push_back(p);
-            marker.colors.push_back(c);
-        }
-
-    pub_perform_clustering_marker_.publish(marker);
-    populateMarkerReference();
-}
 }

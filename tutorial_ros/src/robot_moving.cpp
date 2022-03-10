@@ -35,7 +35,6 @@
  */
 
 #include <tutorial_ros/robot_moving.h>
-#include <cmath>
 #include <tf/transform_datatypes.h>
 #include <tf/transform_listener.h>
 #include "std_srvs/Empty.h"

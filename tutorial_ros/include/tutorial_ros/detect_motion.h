@@ -36,11 +36,10 @@
  
 #pragma once
 
-#ifndef ROBAIR_ROBOT_DETECT_MOTION_DISPLAY_H
-#define ROBAIR_ROBOT_DETECT_MOTION_DISPLAY_H
+#ifndef ROBAIR_ROBOT_DETECT_MOTION_H
+#define ROBAIR_ROBOT_DETECT_MOTION_H
 
 #include "ros/ros.h"
-#include "sensor_msgs/LaserScan.h"
 #include "geometry_msgs/Point.h"
 #include "std_msgs/ColorRGBA.h"
 #include "std_msgs/Bool.h"
@@ -54,11 +53,11 @@ public:
      */
     DetectMotion(ros::NodeHandle& nh);
 
-    /**
-     * \brief Default Class Destructor.
-     */
-    virtual ~DetectMotion(){}
-
+    // /**
+    //  * \brief Initialization.
+    //  */
+    // bool init(ros::NodeHandle& nh);
+    
     /**
      * \brief Laser Data Processing.
      */
@@ -72,107 +71,68 @@ public:
     /**
      * \brief Laser Data Processing.
      */  
-    void detectMotion();
-
-    /**
-     * \brief Laser Data Processing.
-     */  
-    void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan);
+    void motionDetection();
 
     /**
      * \brief Laser Data Processing.
      */  
     void robotMovingCallback(const std_msgs::Bool::ConstPtr &state);
 
-    /**
-     * \brief Laser Data Processing.
-     */  
-    void populateMarkerReference();
-
-    /**
-     * \brief Laser Data Processing.
-     */  
-    void populateMarkerTopic();
-
 private:
     /**
      * \brief Node Handler.
      */
     ros::NodeHandle nh_;
-    /**
-     * \brief Laser Scan Subscriber.
-     */
-    ros::Subscriber sub_scan_;
+
     /**
      * \brief Robot Motion Subscriber.
      */
     ros::Subscriber sub_robot_moving_;
+
     /**
      * \brief Motion Detection Marker Publisher.
      */
     ros::Publisher pub_detect_motion_marker_;
 
     /**
-     * \brief Number of Laser Scan Beams.
-     */
-    int nb_beams;
-    /**
-     * \brief Laser Min & Max Ranges.
-     */
-    float range_min, range_max;
-    /**
-     * \brief Angle Min, Max, Increment.
-     */
-    float angle_min, angle_max, angle_inc;
-    /**
-     * \brief Laser Radius & Angles.
-     */
-    float r[1000], theta[1000];
-    /**
-     * \brief Current Laser Points.
-     */
-    geometry_msgs::Point current_scan[1000];
-
-    /**
      * \brief Robot Motion Initialization Flag.
      */
     bool init_robot;
+
     /**
      * \brief Flag to Check if Background is Stored.
      */
     bool stored_background;
+
     /**
      * \brief Background Points.
      */
     float background[1000];
+
     /**
      * \brief Dynamic Points.
      */
     bool dynamic[1000];
+
     /**
      * \brief Robot Motion Flag.
      */
     bool current_robot_moving;
+
     /**
      * \brief Robot Was in Motion Before Flag.
      */
     bool previous_robot_moving;
-    /**
-     * \brief Number of Dynamic Points.
-     */
-    int nb_dynamic_pts;
+    
     /**
      * \brief Laser Points to Display.
-     */ 
+     */
     geometry_msgs::Point display[1000];
+
     /**
      * \brief Color Messages.
      */
     std_msgs::ColorRGBA colors[1000];
-    /**
-     * \brief To Check if New Laser Data is Available.
-     */
-    bool new_laser;
 };
 }
 

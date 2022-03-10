@@ -33,10 +33,13 @@
  *
  ***********************************************************************************************************************
  */
+#pragma once
+
+#ifndef ROBAIR_ROBOT_MOVING_H
+#define ROBAIR_ROBOT_MOVING_H
 
 // Signal handling
 #include <signal.h>
-
 #include "ros/ros.h"
 #include "geometry_msgs/Point.h"
 #include "std_msgs/Float32.h"
@@ -51,11 +54,6 @@ public:
      * \brief Default Class Constructor.
      */
     RobotMoving(ros::NodeHandle& nh);
-
-    /**
-     * \brief Default Class Destructor.
-     */
-    virtual ~RobotMoving(){}
 
     /**
      * \brief Odometry Callback.
@@ -111,3 +109,5 @@ private:
     bool new_odom;
 };
 }
+
+#endif

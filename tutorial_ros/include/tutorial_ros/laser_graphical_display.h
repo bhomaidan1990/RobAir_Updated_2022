@@ -40,10 +40,9 @@
 #define ROBAIR_ROBOT_LASER_GRAPHICAL_DISPLAY_H
 
 #include "ros/ros.h"
-#include "sensor_msgs/LaserScan.h"
 #include "geometry_msgs/Point.h"
 #include "std_msgs/ColorRGBA.h"
-#include "std_msgs/Bool.h"
+#include "visualization_msgs/Marker.h"
 
 namespace robair
 {
@@ -55,34 +54,15 @@ public:
      */
     LaserGraphicalDisplay(ros::NodeHandle& nh);
 
-    /**
-     * \brief Default Class Destructor.
-     */
-    virtual ~LaserGraphicalDisplay(){}
-    
+    // /**
+    //  * \brief Initialization.
+    //  */
+    // bool init(ros::NodeHandle& nh);
+
     /**
      * \brief Laser Data Processing.
      */
     void update();
-
-    /**
-     * \brief Laser Scan Subscriber Callback.
-     * \param scan Laser Scan Message to Trigger the Callback.
-     *
-     */
-    void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan);
-
-    /**
-     * \brief Draws the Field of View and Other References.
-     *
-     */
-    void populateMarkerReference();
-
-    /**
-     * \brief Marker Topic Publisher.
-     *
-     */
-    void populateMarkerTopic();
 
 private:
     /**
@@ -90,45 +70,15 @@ private:
      */
     ros::NodeHandle nh_;
     /**
-     * \brief Laser Scan Subscriber.
-     */
-    ros::Subscriber sub_scan_;
-    /**
      * \brief Graphical Display Marker Publisher.
      */
     ros::Publisher pub_laser_graphical_display_marker_;
-    /**
-     * \brief Number of Laser Scan Beams.
-     */
-    int nb_beams;
-    /**
-     * \brief Laser Min & Max Ranges.
-     */
-    float range_min, range_max;
-    /**
-     * \brief Angle Min, Max, Increment.
-     */
-    float angle_min, angle_max, angle_inc;
-    /**
-     * \brief Laser Radius & Angles.
-     */
-    float r[1000], theta[1000];
-    /**
-     * \brief Current Laser Points.
-     */
-    geometry_msgs::Point current_scan[1000];
-    /**
-     * \brief New Laser Rading Availabilty Flag.
-     */
-    bool new_laser;
-    /**
-     * \brief Number of Points.
-     */
-    int nb_pts;
+
     /**
      * \brief Laser Points to Display.
      */
     geometry_msgs::Point display[1000];
+
     /**
      * \brief Color Messages.
      */

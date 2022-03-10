@@ -34,10 +34,8 @@
  ***********************************************************************************************************************
  */
 
+#include <tutorial_ros/utility.h>
 #include <tutorial_ros/laser_text_display.h>
-#include <cmath>
-#include "ros/time.h"
-
 
 namespace robair
 {
@@ -52,20 +50,29 @@ namespace robair
 LaserTextDisplay::LaserTextDisplay(ros::NodeHandle& nh):
   nh_(nh) 
   {
-    sub_scan_ = nh_.subscribe("/scan", 1, &LaserTextDisplay::scanCallback, this);
-    new_laser = false;
+      // init(nh_);
+      // name_space_ = "/tutorial_ros";
+      sub_scan_ = nh_.subscribe("/scan", 1, &scanCallback);
+      new_laser = false;
 
-    //INFINTE LOOP TO COLLECT LASER DATA AND PROCESS THEM
-    ros::Rate r(10);// this node will run at 10hz
-    while (ros::ok()) {
-        ros::spinOnce();//each callback is called once to collect new data: laser
-        update();//processing of data
-        //we wait if the processing (ie, callback+update) has taken less than 0.1s (ie, 10 hz)
-        r.sleep();
+      // INFINTE LOOP TO COLLECT LASER DATA AND PROCESS THEM
+      ros::Rate r(10); // this node will run at 10hz
+      while (ros::ok())
+      {
+          ros::spinOnce(); // each callback is called once to collect new data: laser
+          update();        // processing of data
+          // we wait if the processing (ie, callback+update) has taken less than 0.1s (ie, 10 hz)
+          r.sleep();
     }
 
 }
-  
+
+// bool LaserTextDisplay::init(ros::NodeHandle& nh){
+//     ROS_INFO("Laser Text Display Node Initialization...");
+//     // To Do Some Checks and Initializations.
+//     return true;
+// }
+
 void LaserTextDisplay::update() {
     // we wait for new data of the laser
     if ( new_laser )
@@ -80,36 +87,6 @@ void LaserTextDisplay::update() {
         new_laser = false;
 
     }
-
 }
 
-void LaserTextDisplay::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan) {
-
-    new_laser = true;
-    // store the important data related to laserscanner
-    range_min = scan->range_min;
-    range_max = scan->range_max;
-    angle_min = scan->angle_min;
-    angle_max = scan->angle_max;
-    angle_inc = scan->angle_increment;
-    nb_beams = 
-      ((-1 * angle_min) + angle_max)/angle_inc;
-
-    // store the range and the coordinates in cartesian framework of each hit
-    float beam_angle = angle_min;
-    for ( int loop=0 ; loop < nb_beams; loop++, beam_angle += angle_inc ) {
-        if ( ( scan->ranges[loop] < range_max ) && 
-           ( scan->ranges[loop] > range_min ) )
-            r[loop] = scan->ranges[loop];
-        else
-            r[loop] = range_max;
-        theta[loop] = beam_angle;
-
-        //transform the scan in cartesian framework
-        current_scan[loop].x = r[loop] * cos(beam_angle);
-        current_scan[loop].y = r[loop] * sin(beam_angle);
-        current_scan[loop].z = 0.0;
-    }
-
-}
 }
