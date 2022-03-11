@@ -17,5 +17,5 @@ Considering that you are in valid catkin workspace:
 ```
 catkin clean --all -y && catkin b
 . devel/setup.bash
-roslaunch tutorial_ros robair_test.launch
+roslaunch tutorial_ros robair_lab1
 ```
