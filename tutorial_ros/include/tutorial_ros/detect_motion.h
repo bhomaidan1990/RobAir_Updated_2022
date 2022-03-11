@@ -42,7 +42,6 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Point.h"
 #include "std_msgs/ColorRGBA.h"
-#include "std_msgs/Bool.h"
 
 namespace robair{
 
@@ -64,12 +63,12 @@ public:
     void update();
     
     /**
-     * \brief Laser Data Processing.
+     * \brief Store Background.
      */  
     void storeBackground();
 
     /**
-     * \brief Laser Data Processing.
+     * \brief Motion Detection.
      */  
     void motionDetection();
 

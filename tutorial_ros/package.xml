@@ -21,5 +21,7 @@
   <depend>nav_msgs</depend>
   <depend>genmsg</depend>
   <depend>tf</depend>
-    
+  
+  <exec_depend>dataset</exec_depend>
+
 </package>
