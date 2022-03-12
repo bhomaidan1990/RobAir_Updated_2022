@@ -16,7 +16,8 @@ Considering that you have Ros1:
 
 ```
 mkdir -p ~/catkin_ws/src && cd ~/catkin_ws/src
-git submodule update --init --recursive https://github.com/bhomaidan1990/RobAir_Updated_2022.git
+git clone --recurse-submodules https://github.com/bhomaidan1990/RobAir_Updated_2022.git
+git submodule update --init --recursive
 mv RobAir_Updated_2022/* ../
 cd .. && catkin init -DCMAKE_BUILD_TYPE=RELEASE
 catkin clean --all -y && catkin b
