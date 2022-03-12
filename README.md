@@ -20,6 +20,9 @@ git submodule update --init --recursive https://github.com/bhomaidan1990/RobAir_
 catkin clean --all -y && catkin b
 ```
 Then:
+
+### Lab 1
+
 ```
 . devel/setup.bash
 roslaunch tutorial_ros robair_lab1
