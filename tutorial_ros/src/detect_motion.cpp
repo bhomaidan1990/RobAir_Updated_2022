@@ -52,18 +52,7 @@ namespace robair{
 DetectMotion::DetectMotion(ros::NodeHandle& nh):
   nh_(nh) 
   {
-      // init(nh_);
-      // name_space_ = "/tutorial_ros";
-      sub_scan_ = nh_.subscribe("/scan", 1, &scanCallback);
-      // TODO: check topic namespace!
-      sub_robot_moving_ = nh_.subscribe("/tutorial_ros/robot_moving", 1, &robotMovingCallback);
-      // Preparing a topic to publish our results. This will be used by the visualization tool rviz
-      pub_detect_motion_marker_ = nh_.advertise<visualization_msgs::Marker>("detect_motion_marker", 1);
-
-      new_laser = false;
-      init_robot = false;
-      previous_robot_moving = true;
-      stored_background = false;
+      init(nh_);
 
       // INFINTE LOOP TO COLLECT LASER DATA AND PROCESS THEM
       ros::Rate r(10); // this node will run at 10hz
@@ -73,6 +62,31 @@ DetectMotion::DetectMotion(ros::NodeHandle& nh):
           update();        // processing of data
           r.sleep();       // we wait if the processing (ie, callback+update) has taken less than 0.1s (ie, 10 hz)
     }
+}
+
+bool DetectMotion::init(ros::NodeHandle& nh){
+    // To Do Some Checks and Initializations.
+    ROS_INFO("Detect Motion Node Initialization...");
+
+    // name_space_ = "/tutorial_ros";
+
+    sub_scan_ = nh.subscribe("/scan", 1, &scanCallback);
+
+    // TODO: check topic namespace!
+    sub_robot_moving_ = nh.subscribe("/tutorial_ros/robot_moving", 1, &robotMovingCallback);
+
+    // Preparing a topic to publish our results. This will be used by the visualization tool rviz
+    pub_detect_motion_marker_ = nh.advertise<visualization_msgs::Marker>("detect_motion_marker", 1);
+
+    new_laser = false;
+
+    init_robot = false;
+
+    previous_robot_moving = true;
+    
+    stored_background = false;
+
+    return true;
 }
 
 void DetectMotion::update() {

@@ -34,86 +34,69 @@
  ***********************************************************************************************************************
  */
 
-#include <tutorial_ros/utility.h>
-#include <tutorial_ros/robot_moving.h>
+// Security Distance
+#define SECURITY_DISTANCE 0.5
 
-int nb_static = 5;
+#include <tutorial_ros/utility.h>
+#include <tutorial_ros/rotation_done.h>
 
 namespace robair{
 /***********************************************************************************************************************
- * Class definitions: RobotMoving
+ * Class definitions: RotationDone
  */
 
 /***********************************************************
  * Primary methods
  */
-RobotMoving::RobotMoving(ros::NodeHandle& nh):
+RotationDone::RotationDone(ros::NodeHandle& nh):
   nh_(nh) 
   {
-    init(nh_);
-
-    ros::Rate r(20);//this node is updated at 20hz
-
-    while (ros::ok()) {
-        ros::spinOnce();
-        update();
-        r.sleep();
-    }
-
-}
-
-bool RobotMoving::init(ros::NodeHandle& nh){
-    // To Do Some Checks and Initializations.
-    ROS_INFO("Robot Moving Node Initialization...");
-
-    // name_space_ = "/follow_me";
-    // communication with person_detector
-    pub_robot_moving_ = nh.advertise<std_msgs::Bool>("robot_moving", 1);   
-
+    // init(nh_);
+    // name_space_ = "/tutorial_ros";
     // communication with odometry
-    sub_odometry_ = nh.subscribe("/odom", 1, &odomCallback);
+    sub_odometry_ = nh_.subscribe("/odom", 1, &odomCallback);
 
-    moving = 1;
-
-    count = 0;
-
-    not_moving_position.x = 0;
-    not_moving_position.y = 0;
-
-    not_moving_orientation = 0;
-    
     init_odom = false;
+    first = true;
+    rotation_done = 0;
 
-    return true;
-}
-
-void RobotMoving::update() {
-
-    if ( init_odom ) {//we wait for new data of odometry
-        init_odom = false;
-        if ( ( not_moving_position.x == position.x ) && ( not_moving_position.y == position.y ) && ( not_moving_orientation == orientation ) ) {
-            count++;
-            if ( ( count == nb_static ) && ( moving ) ) {
-                ROS_INFO("robot is not moving");
-                moving = false;
-            }
-        }
-        else {
-            not_moving_position.x = position.x;
-            not_moving_position.y = position.y;
-            not_moving_orientation = orientation;
-            count = 0;
-            if ( !moving ) {
-                ROS_INFO("robot is moving");
-                moving = true;
-            }
-        }
-
-        std_msgs::Bool robot_moving_msg;
-        robot_moving_msg.data = moving;
-
-        pub_robot_moving_.publish(robot_moving_msg);
+    //INFINITE LOOP TO COLLECT LASER DATA AND PROCESS THEM
+    ros::Rate r(10);// this node will run at 10hz
+    while (ros::ok()) {
+        ros::spinOnce();//each callback is called once to collect new data: laser + robot_moving
+        update();//processing of data
+        r.sleep();//we wait if the processing (ie, callback+update) has taken less than 0.1s (ie, 10 hz)
     }
+}
+
+void RotationDone::update() {
+
+    if ( init_odom )
+    {
+
+        if ( first )
+            initial_orientation = orientation;
+        first = false;
+
+        rotation_done = orientation - initial_orientation;
+
+        //do not forget that rotation_done must always be between -M_PI and +M_PI
+        if ( rotation_done > M_PI )
+        {
+            ROS_WARN("rotation_done > 180 degrees: %f degrees -> %f degrees", rotation_done*180/M_PI, (rotation_done-2*M_PI)*180/M_PI);
+            rotation_done -= 2*M_PI;
+        }
+        else
+            if ( rotation_done < -M_PI )
+            {
+                ROS_WARN("rotation_done < -180 degrees: %f degrees -> %f degrees", rotation_done*180/M_PI, (rotation_done+2*M_PI)*180/M_PI);
+                rotation_done += 2*M_PI;
+            }
+
+        ROS_INFO("current_orientation: %f, initial_orientation: %f, rotation_done: %f", orientation*180/M_PI, initial_orientation*180/M_PI, rotation_done*180/M_PI);
+    }
+}
 
 }
-}
+
+

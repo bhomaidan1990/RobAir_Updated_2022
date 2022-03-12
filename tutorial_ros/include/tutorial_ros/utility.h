@@ -135,9 +135,9 @@ namespace robair
     float orientation;
 
     /**
-     * \brief Odometry Data Availablity flag.
+     * \brief Odometry Data Flag.
      */
-    bool new_odom;
+    bool init_odom;
 
     /**------------------------
      *  Subscribers
@@ -158,44 +158,43 @@ namespace robair
      */
     ros::Subscriber sub_odometry_;
 
-    /**==================
-     *  Shared Methods
-     *===================*/
+/**==================
+ *  Shared Methods
+ *===================*/
 
-    /**------------------------
-     *  Callbacks
-     *-----------------------*/
+/**------------------------
+ *  Callbacks
+ *-----------------------*/
 
-    /**
-     * \brief Laser Scan Callback.
-     *
-     */
-    void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan)
+/**
+ * \brief Laser Scan Callback.
+ */
+void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan)
+{
+    new_laser = true;
+    // store the important data related to laserscanner
+    range_min = scan->range_min;
+    range_max = scan->range_max;
+    angle_min = scan->angle_min;
+    angle_max = scan->angle_max;
+    angle_inc = scan->angle_increment;
+    nb_beams = ((-1 * angle_min) + angle_max) / angle_inc;
+
+    // store the range and the coordinates in cartesian framework of each hit
+    float beam_angle = angle_min;
+    for (int loop = 0; loop < nb_beams; loop++, beam_angle += angle_inc)
     {
-        new_laser = true;
-        // store the important data related to laserscanner
-        range_min = scan->range_min;
-        range_max = scan->range_max;
-        angle_min = scan->angle_min;
-        angle_max = scan->angle_max;
-        angle_inc = scan->angle_increment;
-        nb_beams = ((-1 * angle_min) + angle_max) / angle_inc;
+        if ((scan->ranges[loop] < range_max) && (scan->ranges[loop] > range_min))
+            r[loop] = scan->ranges[loop];
+        else
+            r[loop] = range_max;
+        theta[loop] = beam_angle;
 
-        // store the range and the coordinates in cartesian framework of each hit
-        float beam_angle = angle_min;
-        for (int loop = 0; loop < nb_beams; loop++, beam_angle += angle_inc)
-        {
-            if ((scan->ranges[loop] < range_max) && (scan->ranges[loop] > range_min))
-                r[loop] = scan->ranges[loop];
-            else
-                r[loop] = range_max;
-            theta[loop] = beam_angle;
-
-            // transform the scan in cartesian framework
-            current_scan[loop].x = r[loop] * cos(beam_angle);
-            current_scan[loop].y = r[loop] * sin(beam_angle);
-            current_scan[loop].z = 0.0;
-        }    
+        // transform the scan in cartesian framework
+        current_scan[loop].x = r[loop] * cos(beam_angle);
+        current_scan[loop].y = r[loop] * sin(beam_angle);
+        current_scan[loop].z = 0.0;
+    }    
 }
 
 /**
@@ -210,7 +209,7 @@ void robotMovingCallback(const std_msgs::Bool::ConstPtr& state) {
  * \brief Odometry Callback.
  */ 
 void odomCallback(const nav_msgs::Odometry::ConstPtr& o) {
-    new_odom = true;
+    init_odom = true;
     position.x = o->pose.pose.position.x;
     position.y = o->pose.pose.position.y;
     orientation = tf::getYaw(o->pose.pose.orientation);
@@ -221,7 +220,6 @@ void odomCallback(const nav_msgs::Odometry::ConstPtr& o) {
 
 /**
  * \brief Marker References Publishing.
- *
  */
 void populateMarkerReference(ros::Publisher &pub) {
 
@@ -278,7 +276,6 @@ void populateMarkerReference(ros::Publisher &pub) {
 
 /**
  * \brief Marker Topic Publishing.
- *
  */
 void populateMarkerTopic(ros::Publisher &pub, int &nb_pts,
         geometry_msgs::Point *display, std_msgs::ColorRGBA *colors){
@@ -335,9 +332,7 @@ void populateMarkerTopic(ros::Publisher &pub, int &nb_pts,
 float distancePoints(geometry_msgs::Point pa, geometry_msgs::Point pb) {
 
     return sqrt(pow((pa.x-pb.x),2.0) + pow((pa.y-pb.y),2.0));
-
 }
-
 
 }
 

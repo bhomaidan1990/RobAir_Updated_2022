@@ -51,10 +51,10 @@ public:
      */
     RobotMoving(ros::NodeHandle& nh);
 
-    // /**
-    //  * \brief Initialization.
-    //  */
-    // bool init(ros::NodeHandle& nh);
+    /**
+     * \brief Initialization.
+     */
+    bool init(ros::NodeHandle& nh);
     
     /**
      * \brief Data Processing.

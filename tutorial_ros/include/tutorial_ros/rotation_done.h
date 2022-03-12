@@ -33,31 +33,21 @@
  *
  ***********************************************************************************************************************
  */
-
 #pragma once
 
-#ifndef ROBAIR_ROBOT_LASER_GRAPHICAL_DISPLAY_H
-#define ROBAIR_ROBOT_LASER_GRAPHICAL_DISPLAY_H
+#ifndef ROBAIR_ROBOT_ROTATION_H
+#define ROBAIR_ROBOT_ROTATION_H
 
 #include "ros/ros.h"
-#include "geometry_msgs/Point.h"
-#include "std_msgs/ColorRGBA.h"
-#include "visualization_msgs/Marker.h"
 
-namespace robair
-{
+namespace robair{
 
-class LaserGraphicalDisplay {
+class RotationDone {
 public:
     /**
      * \brief Default Class Constructor.
      */
-    LaserGraphicalDisplay(ros::NodeHandle& nh);
-
-    /**
-     * \brief Initialization.
-     */
-    bool init(ros::NodeHandle& nh);
+    RotationDone(ros::NodeHandle& nh);
 
     /**
      * \brief Laser Data Processing.
@@ -69,21 +59,23 @@ private:
      * \brief Node Handler.
      */
     ros::NodeHandle nh_;
-    /**
-     * \brief Graphical Display Marker Publisher.
-     */
-    ros::Publisher pub_laser_graphical_display_marker_;
 
     /**
-     * \brief Laser Points to Display.
+     * \brief TODO.
      */
-    geometry_msgs::Point display[1000];
+    float rotation_done;
 
     /**
-     * \brief Color Messages.
+     * \brief Initial Orientation (ie, before starting the pid for rotation control).
      */
-    std_msgs::ColorRGBA colors[1000];
+    float initial_orientation;
+
+    /**
+     * \brief TODO.
+     */
+    bool first;
 };
+
 }
 
 #endif

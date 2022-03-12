@@ -49,13 +49,7 @@ namespace robair
 LaserGraphicalDisplay::LaserGraphicalDisplay(ros::NodeHandle& nh):
   nh_(nh) 
   {
-      // init(nh_);
-      // name_space_ = "/tutorial_ros";
-      sub_scan_ = nh_.subscribe("/scan", 1, &scanCallback);
-      // Preparing a topic to publish our results. This will be used by the visualization tool rviz
-      pub_laser_graphical_display_marker_ = nh_.advertise<visualization_msgs::Marker>("laser_graphical_display_marker", 1);
-
-      new_laser = false;
+      init(nh_);
 
       // INFINTE LOOP TO COLLECT LASER DATA AND PROCESS THEM
       ros::Rate r(10); // this node will run at 10hz
@@ -66,6 +60,22 @@ LaserGraphicalDisplay::LaserGraphicalDisplay(ros::NodeHandle& nh):
           r.sleep();       // we wait if the processing (ie, callback+update) has taken less than 0.1s (ie, 10 hz)
     }
 
+}
+
+bool LaserGraphicalDisplay::init(ros::NodeHandle& nh){
+    // To Do Some Checks and Initializations.
+    ROS_INFO("Laser Laser Graphical Display Node Initialization...");
+    
+    // name_space_ = "/tutorial_ros";
+
+      sub_scan_ = nh.subscribe("/scan", 1, &scanCallback);
+
+      // Preparing a topic to publish our results. This will be used by the visualization tool rviz
+      pub_laser_graphical_display_marker_ = nh.advertise<visualization_msgs::Marker>("laser_graphical_display_marker", 1);
+
+      new_laser = false;
+      
+    return true;
 }
 
 void LaserGraphicalDisplay::update() {

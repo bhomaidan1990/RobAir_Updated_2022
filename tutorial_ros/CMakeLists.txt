@@ -154,6 +154,22 @@ target_link_libraries(${target_name}
   ${catkin_LIBRARIES}
 )
 
+#------------------------------------
+#  rotation_done
+#------------------------------------
+set(target_name rotation_done)
+
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
+)
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
+  ${catkin_LIBRARIES}
+)
+
 #===========================================================
 # Install
 #===========================================================
