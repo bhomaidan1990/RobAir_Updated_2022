@@ -1,2 +1,3 @@
 .vscode/*
 !.vscode/launch.json
+dataset/robair_dataset/localization_test.bag
