@@ -15,7 +15,12 @@ Introduction to Robotics Labs
 Considering that you are in valid catkin workspace:
 
 ```
+mkdir -p ~/catkin_ws/src && cd ~/catkin_ws/src
+git submodule update --init --recursive https://github.com/bhomaidan1990/RobAir_Updated_2022.git
 catkin clean --all -y && catkin b
+```
+Then:
+```
 . devel/setup.bash
 roslaunch tutorial_ros robair_lab1
 ```
