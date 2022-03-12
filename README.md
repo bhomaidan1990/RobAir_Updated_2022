@@ -25,5 +25,5 @@ catkin clean --all -y && catkin b
 Then:
 ```
 . devel/setup.bash
-roslaunch tutorial_ros robair_lab1
+roslaunch tutorial_ros robair_lab1.launch
 ```
