@@ -51,14 +51,7 @@ namespace robair{
 RotationDone::RotationDone(ros::NodeHandle& nh):
   nh_(nh) 
   {
-    // init(nh_);
-    // name_space_ = "/tutorial_ros";
-    // communication with odometry
-    sub_odometry_ = nh_.subscribe("/odom", 1, &odomCallback);
-
-    init_odom = false;
-    first = true;
-    rotation_done = 0;
+    init(nh_);
 
     //INFINITE LOOP TO COLLECT LASER DATA AND PROCESS THEM
     ros::Rate r(10);// this node will run at 10hz
@@ -67,6 +60,24 @@ RotationDone::RotationDone(ros::NodeHandle& nh):
         update();//processing of data
         r.sleep();//we wait if the processing (ie, callback+update) has taken less than 0.1s (ie, 10 hz)
     }
+}
+
+bool RotationDone::init(ros::NodeHandle& nh){
+    // To Do Some Checks and Initializations.
+    ROS_INFO("Rotation Done Node Initialization...");
+
+    // name_space_ = "/tutorial_ros";
+    
+    // communication with odometry
+    sub_odometry_ = nh.subscribe("/odom", 1, &odomCallback);
+
+    init_odom = false;
+
+    first = true;
+    
+    rotation_done = 0;
+      
+    return true;
 }
 
 void RotationDone::update() {

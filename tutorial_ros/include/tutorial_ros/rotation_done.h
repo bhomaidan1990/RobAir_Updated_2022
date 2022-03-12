@@ -50,6 +50,11 @@ public:
     RotationDone(ros::NodeHandle& nh);
 
     /**
+     * \brief Initialization.
+     */
+    bool init(ros::NodeHandle& nh);
+
+    /**
      * \brief Laser Data Processing.
      */
     void update();

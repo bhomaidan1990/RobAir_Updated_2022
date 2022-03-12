@@ -334,6 +334,18 @@ float distancePoints(geometry_msgs::Point pa, geometry_msgs::Point pb) {
     return sqrt(pow((pa.x-pb.x),2.0) + pow((pa.y-pb.y),2.0));
 }
 
+/**
+ * \brief Middle Point of Two Points.
+ *
+ * \return geometry_msgs::Point Middle Point.
+ */
+geometry_msgs::Point legsMiddle(geometry_msgs::Point pa, geometry_msgs::Point pb){
+    geometry_msgs::Point tmp;
+    tmp.x = (pa.x + pb.x) / 2;
+    tmp.y = (pa.y + pb.y) / 2;
+    return tmp;
+}
+
 }
 
 #endif
