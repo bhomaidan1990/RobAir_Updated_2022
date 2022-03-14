@@ -111,6 +111,20 @@ namespace robair
     bool new_laser;
 
     /**------------------------
+     *  Graphical Display
+     *-----------------------*/
+
+    /**
+     * \brief Laser Points to Display.
+     */
+    geometry_msgs::Point display[1000];
+
+    /**
+     * \brief Color Messages.
+     */
+    std_msgs::ColorRGBA colors[1000];
+
+    /**------------------------
      *  Motion Related
      *-----------------------*/
     /**
@@ -329,7 +343,7 @@ void populateMarkerTopic(ros::Publisher &pub, int &nb_pts,
  *
  * \return float Eucledian Distance in Meters.
  */
-float distancePoints(geometry_msgs::Point pa, geometry_msgs::Point pb) {
+float distancePoints(geometry_msgs::Point &pa, geometry_msgs::Point &pb) {
 
     return sqrt(pow((pa.x-pb.x),2.0) + pow((pa.y-pb.y),2.0));
 }
@@ -339,7 +353,7 @@ float distancePoints(geometry_msgs::Point pa, geometry_msgs::Point pb) {
  *
  * \return geometry_msgs::Point Middle Point.
  */
-geometry_msgs::Point legsMiddle(geometry_msgs::Point pa, geometry_msgs::Point pb){
+geometry_msgs::Point legsMiddle(geometry_msgs::Point &pa, geometry_msgs::Point &pb){
     geometry_msgs::Point tmp;
     tmp.x = (pa.x + pb.x) / 2;
     tmp.y = (pa.y + pb.y) / 2;

@@ -40,8 +40,6 @@
 #define ROBAIR_ROBOT_CLUSTERING_H
 
 #include "ros/ros.h"
-#include "geometry_msgs/Point.h"
-#include "std_msgs/ColorRGBA.h"
 
 namespace robair
 {
@@ -80,15 +78,6 @@ private:
      */
     ros::Publisher pub_perform_clustering_marker_;
 
-    /**
-     * \brief Laser Points to Display.
-     */
-    geometry_msgs::Point display[1000];
-
-    /**
-     * \brief Color Messages.
-     */
-    std_msgs::ColorRGBA colors[1000];
 };
 }
 

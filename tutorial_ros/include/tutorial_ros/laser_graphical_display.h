@@ -40,9 +40,6 @@
 #define ROBAIR_ROBOT_LASER_GRAPHICAL_DISPLAY_H
 
 #include "ros/ros.h"
-#include "geometry_msgs/Point.h"
-#include "std_msgs/ColorRGBA.h"
-#include "visualization_msgs/Marker.h"
 
 namespace robair
 {
@@ -69,20 +66,11 @@ private:
      * \brief Node Handler.
      */
     ros::NodeHandle nh_;
+
     /**
      * \brief Graphical Display Marker Publisher.
      */
     ros::Publisher pub_laser_graphical_display_marker_;
-
-    /**
-     * \brief Laser Points to Display.
-     */
-    geometry_msgs::Point display[1000];
-
-    /**
-     * \brief Color Messages.
-     */
-    std_msgs::ColorRGBA colors[1000];
 };
 }
 

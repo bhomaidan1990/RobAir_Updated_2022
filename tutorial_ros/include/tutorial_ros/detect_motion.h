@@ -40,8 +40,6 @@
 #define ROBAIR_ROBOT_DETECT_MOTION_H
 
 #include "ros/ros.h"
-#include "geometry_msgs/Point.h"
-#include "std_msgs/ColorRGBA.h"
 
 namespace robair{
 
@@ -82,12 +80,12 @@ private:
      * \brief Robot Motion Subscriber.
      */
     ros::Subscriber sub_robot_moving_;
-
+    
     /**
      * \brief Motion Detection Marker Publisher.
      */
     ros::Publisher pub_detect_motion_marker_;
-
+    
     /**
      * \brief Flag to Check if Background is Stored.
      */
@@ -108,15 +106,6 @@ private:
      */
     bool previous_robot_moving;
     
-    /**
-     * \brief Laser Points to Display.
-     */
-    geometry_msgs::Point display[1000];
-
-    /**
-     * \brief Color Messages.
-     */
-    std_msgs::ColorRGBA colors[1000];
 };
 }
 
