@@ -139,6 +139,11 @@ namespace robair
     bool current_robot_moving;
 
     /**
+     * \brief TODO.
+     */  
+    bool previous_robot_moving;
+    
+    /**
      * \brief Robot Position.
      */    
     geometry_msgs::Point position;

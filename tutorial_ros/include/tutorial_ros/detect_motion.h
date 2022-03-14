@@ -100,11 +100,6 @@ private:
      * \brief Dynamic Points.
      */
     bool dynamic[1000];
-
-    /**
-     * \brief Robot Was in Motion Before Flag.
-     */
-    bool previous_robot_moving;
     
 };
 }
