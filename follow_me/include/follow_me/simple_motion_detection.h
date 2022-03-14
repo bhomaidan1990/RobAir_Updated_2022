@@ -33,58 +33,116 @@
  *
  ***********************************************************************************************************************
  */
-
+ 
 #pragma once
 
-#ifndef ROBAIR_ROBOT_DETECTION_H
-#define ROBAIR_ROBOT_DETECTION_H
+#ifndef ROBAIR_SIMPLE_MOTION_DETECTION_H
+#define ROBAIR_SIMPLE_MOTION_DETECTION_H
 
 #include "ros/ros.h"
-#include <follow_me/simple_motion_detection.h>
 
 namespace robair{
 
-class Detection {
+class SimpleMotionDetection{
+
 public:
     /**
      * \brief Default Class Constructor.
      */
-    Detection(ros::NodeHandle& nh);
+    SimpleMotionDetection();
 
     /**
      * \brief Initialization.
      */
-    bool init(ros::NodeHandle& nh);
-    
-    /**
-     * \brief Laser Data Processing.
-     */
-    void update();
+    bool init(int &num_beams, float (& r_)[1000], bool curr_robot_moving, bool prev_robot_moving);
 
+    /**
+     * \brief Run Motion Detection.
+     */  
+    void run();
+
+    /**
+     * \brief Detect Motion.
+     */  
     void detectMotion();
 
-private:
     /**
-     * \brief Node Handler.
-     */
-    ros::NodeHandle nh_;
-
-    /**
-     * \brief Detection Marker Publisher.
-     */      
-    ros::Publisher pub_detection_marker_;
-
-    /**
-     * \brief Detection Node Publisher.
+     * \brief Store Background.
      */  
-    ros::Publisher pub_detection_node_;
-    
-    SimpleMotionDetection m_detect_;
+    void storeBackground();
+
+    /**
+     * \brief Reset Motion Dynamic Array.
+     */  
+    void resetMotion();
+    //------------------------------------
+    // Getter Functions
+    //------------------------------------
+    /**
+     * \brief Get Dynamic Array.
+     * \return bool array dynamic
+     */  
+    bool *getDynamicrArr(){
+        return dynamic;
+    }
+
+    //------------------------------------
+    // Setter Functions
+    //------------------------------------
+    /**
+     * \brief Set stored_background Value.
+     */ 
+    void setStoredBackground(bool val){
+        stored_background = val;
+    }
+    /**
+     * \brief Set current_robot_moving Value.
+     */ 
+    void setCurrentRobotMoving(bool val){
+        current_robot_moving = val;
+    }
+    /**
+     * \brief Set r Values.
+     */ 
+    void setR(float (& r_)[1000]){
+        std::copy(std::begin(r_), std::end(r_), std::begin(r));;
+    }
+private:
 
     /**
      * \brief TODO.
      */  
-    bool dynamic_[1000];
+    bool stored_background;
+
+    /**
+     * \brief TODO.
+     */  
+    float background[1000];
+
+    /**
+     * \brief TODO.
+     */  
+    bool dynamic[1000];
+    
+    /**
+     * \brief Number of Laser Scan Beams.
+     */
+    int nb_beams;
+    
+    /**
+     * \brief Laser Radius & Angles.
+     */
+    float r[1000];
+
+    /**
+     * \brief Robot Currently Moving Flag.
+     */    
+    bool current_robot_moving;
+
+    /**
+     * \brief TODO.
+     */  
+    bool previous_robot_moving; 
 };
 }
 

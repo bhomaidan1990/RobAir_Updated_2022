@@ -36,56 +36,103 @@
 
 #pragma once
 
-#ifndef ROBAIR_ROBOT_DETECTION_H
-#define ROBAIR_ROBOT_DETECTION_H
+#ifndef ROBAIR_SIMPLE_CLUSTERING_H
+#define ROBAIR_SIMPLE_CLUSTERING_H
 
-#include "ros/ros.h"
-#include <follow_me/simple_motion_detection.h>
+#include "geometry_msgs/Point.h"
 
 namespace robair{
 
-class Detection {
+class SimpleClustering{
+
 public:
     /**
      * \brief Default Class Constructor.
      */
-    Detection(ros::NodeHandle& nh);
+    SimpleClustering(ros::NodeHandle& nh);
 
     /**
      * \brief Initialization.
      */
-    bool init(ros::NodeHandle& nh);
-    
-    /**
-     * \brief Laser Data Processing.
-     */
-    void update();
+    bool init();
 
-    void detectMotion();
+    /**
+     * \brief Clustering Function.
+     */
+    void performClustering();
+
+    //------------------------------------
+    // Getter Functions 
+    //------------------------------------
+    // Num of Clusters Getter
+    const int getNumClusters(){
+        return nb_cluster;
+    }
+   /**
+     * \brief To Get the Middle Point of a Cluster.
+    * \return Static geometry_msgs::Point Array cluster_middle
+    */ 
+    const geometry_msgs::Point *getClusterMiddle() const{
+        return cluster_middle;
+    }
+
+   /**
+     * \brief To Get the Cluster Size
+    * \return Static int Array cluster_size
+    */  
+    const int *getClusterArr() const{
+        return cluster;
+    }
+
+    /**
+     * \brief To Get the Cluster Euclidean Distance
+    * \return Static int Array cluster_size
+    */ 
+    const float *getClusterSize() const{
+        return cluster_size;
+    }
+
+    /**
+     * \brief To Get the 100 * Percentage of Dynamic Points Inside a Cluster
+    * \return Static Array cluster_dynamic
+    */ 
+    const int *getClusterDynamic() const{
+        return cluster_dynamic;
+    }
 
 private:
-    /**
-     * \brief Node Handler.
-     */
-    ros::NodeHandle nh_;
 
     /**
-     * \brief Detection Marker Publisher.
+     * \brief Raw Laser Scan to Cluster.
      */      
-    ros::Publisher pub_detection_marker_;
+    geometry_msgs::Point scan_pts[1000];
 
     /**
-     * \brief Detection Node Publisher.
+     * \brief Num of Clusters.
      */  
-    ros::Publisher pub_detection_node_;
-    
-    SimpleMotionDetection m_detect_;
+    int nb_cluster;
 
     /**
-     * \brief TODO.
-     */  
-    bool dynamic_[1000];
+     * \brief Laser Scans Cluster ID.
+     */      
+    int cluster[1000]; 
+
+    /**
+     * \brief Cluster Sizes.
+     */      
+    float cluster_size[1000];
+
+    /**
+     * \brief Middle of Each Cluster.
+     */      
+    geometry_msgs::Point cluster_middle[1000];
+
+    /**
+     * \brief Percentage of Dynamic Cluster.
+     */      
+    int cluster_dynamic[1000];
 };
+
 }
 
 #endif

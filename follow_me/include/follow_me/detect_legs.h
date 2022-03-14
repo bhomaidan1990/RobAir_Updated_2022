@@ -33,59 +33,28 @@
  *
  ***********************************************************************************************************************
  */
-
 #pragma once
 
-#ifndef ROBAIR_ROBOT_DETECTION_H
-#define ROBAIR_ROBOT_DETECTION_H
-
-#include "ros/ros.h"
-#include <follow_me/simple_motion_detection.h>
+#ifndef ROBAIR_DETECT_LEGS_H
+#define ROBAIR_DETECT_LEGS_H
 
 namespace robair{
 
-class Detection {
+class DetectLegs{
+
 public:
     /**
      * \brief Default Class Constructor.
      */
-    Detection(ros::NodeHandle& nh);
+    DetectLegs(geometry_msgs::Point *input_laser_scan);
 
     /**
      * \brief Initialization.
      */
-    bool init(ros::NodeHandle& nh);
-    
-    /**
-     * \brief Laser Data Processing.
-     */
-    void update();
+    bool init();
 
-    void detectMotion();
-
-private:
-    /**
-     * \brief Node Handler.
-     */
-    ros::NodeHandle nh_;
-
-    /**
-     * \brief Detection Marker Publisher.
-     */      
-    ros::Publisher pub_detection_marker_;
-
-    /**
-     * \brief Detection Node Publisher.
-     */  
-    ros::Publisher pub_detection_node_;
-    
-    SimpleMotionDetection m_detect_;
-
-    /**
-     * \brief TODO.
-     */  
-    bool dynamic_[1000];
 };
+
 }
 
 #endif

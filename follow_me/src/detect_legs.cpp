@@ -34,58 +34,19 @@
  ***********************************************************************************************************************
  */
 
-#pragma once
+//used for detection of leg
+#define LEG_SIZE_MIN 0.05
+#define LEG_SIZE_MAX 0.25
 
-#ifndef ROBAIR_ROBOT_DETECTION_H
-#define ROBAIR_ROBOT_DETECTION_H
-
-#include "ros/ros.h"
-#include <follow_me/simple_motion_detection.h>
+#include <tutorial_ros/utility.h>
 
 namespace robair{
+/***********************************************************************************************************************
+ * Class definitions: Simple Motion Detection
+ */
 
-class Detection {
-public:
-    /**
-     * \brief Default Class Constructor.
-     */
-    Detection(ros::NodeHandle& nh);
+/***********************************************************
+ * Primary methods
+ */
 
-    /**
-     * \brief Initialization.
-     */
-    bool init(ros::NodeHandle& nh);
-    
-    /**
-     * \brief Laser Data Processing.
-     */
-    void update();
-
-    void detectMotion();
-
-private:
-    /**
-     * \brief Node Handler.
-     */
-    ros::NodeHandle nh_;
-
-    /**
-     * \brief Detection Marker Publisher.
-     */      
-    ros::Publisher pub_detection_marker_;
-
-    /**
-     * \brief Detection Node Publisher.
-     */  
-    ros::Publisher pub_detection_node_;
-    
-    SimpleMotionDetection m_detect_;
-
-    /**
-     * \brief TODO.
-     */  
-    bool dynamic_[1000];
-};
 }
-
-#endif

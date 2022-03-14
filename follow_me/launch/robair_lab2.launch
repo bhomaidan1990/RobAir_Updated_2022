@@ -19,7 +19,7 @@
   </group>
   <!-- follow_me -->
   <group>
-    <node type="detection" name="detection" output="screen" pkg="follow_me"/>
+    <node type="detection" name="detection" output="screen" pkg="follow_me"/> <!-- output="screen" -->
   </group>
 
   <!-- RViz -->

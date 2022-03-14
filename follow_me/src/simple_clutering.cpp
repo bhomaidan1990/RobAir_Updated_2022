@@ -33,93 +33,81 @@
  *
  ***********************************************************************************************************************
  */
+
+//threshold for clustering
+#define CLUSTER_THRESHOLD 0.2
+//to decide if a cluster is static or dynamic
+#define DYNAMIC_THRESHOLD 75 
+
 #include <tutorial_ros/utility.h>
-#include <follow_me/detection.h>
+#include <follow_me/simple_clustering.h>
+#include <follow_me/simple_motion_detection.h>
 
 namespace robair{
 /***********************************************************************************************************************
- * Class definitions: Detection
+ * Class definitions: Simple Clustering
  */
 
 /***********************************************************
  * Primary methods
  */
-Detection::Detection(ros::NodeHandle& nh):nh_(nh) 
-{
-  init(nh_);
-  
-  ros::Rate r(10);
 
-  while (ros::ok()) {
-      ros::spinOnce();
-      update();
-      r.sleep();
-  }
+SimpleClustering::SimpleClustering(ros::NodeHandle& nh){
+    // Initialization
+    init();
+    SimpleMotionDetection detector_(input_laser_scan);
+    performClustering();
 }
 
-bool Detection::init(ros::NodeHandle& nh){
+bool SimpleClustering::init(){
     // To Do Some Checks and Initializations.
-    ROS_INFO("Detection Node Initialization...");
-    
-    // name_space_ = "/follow_me";
-    sub_scan_ = nh.subscribe("/scan", 1, &scanCallback);
-    sub_robot_moving_ = nh.subscribe("/tutorial_ros/robot_moving", 1, &robotMovingCallback);
-
-    // Preparing a topic to publish the goal to reach.
-    pub_detection_node_ = nh.advertise<geometry_msgs::Point>("goal_to_reach", 1);
-
-    // Preparing a topic to publish our results. This will be used by the visualization tool rviz
-    pub_detection_marker_ = nh.advertise<visualization_msgs::Marker>("detection_marker", 1);
-
-    new_laser = false;
-
-    init_robot = false;
-    
-    previous_robot_moving = true;
-    
-    m_detect_.setStoredBackground(false);
-
+    nb_cluster = 0;
     return true;
 }
 
-void Detection::update()
-{
-  detectMotion();
-}
+void SimpleClustering::performClustering(){
+    ROS_INFO("performing clustering");
 
-void Detection::detectMotion(){
-  int nb_pts = 0;
-  // we wait for new data of the laser and of the robot_moving_node to perform laser processing
-  if (new_laser && init_robot)
-  {
-    ROS_INFO("\n");
-    ROS_INFO("New data of laser received");
-    ROS_INFO("New data of robot_moving received");
+    //initialization of the first cluster
+    int start = 0;// the first hit is the start of the first cluster
+    int end;
+    int dynamic_pts_percentage = 0;
 
-    m_detect_.init(nb_beams, r, current_robot_moving, previous_robot_moving);
-    m_detect_.run();
+    // loop over all the hits
+    for( int loop=1; loop<nb_beams; loop++ ){
+        // if EUCLIDIAN DISTANCE between (the previous hit and the current one) is higher than "CLUSTER_THRESHOLD"
+        if(distancePoints(current_scan[loop], current_scan[loop-1]) > CLUSTER_THRESHOLD)
+        {
+        //the current hit doesnt belong to the same hit
+        cluster[loop-1] = nb_cluster;
+        
+        dynamic_pts_percentage = 100 * dynamic_pts_percentage / (end - start);
 
-    // graphical display of the results
-    for (int loop = 0; loop < nb_beams; loop++){
-      dynamic_[loop] = m_detect_.getDynamicrArr()[loop];
-      if(dynamic_[loop]){
-      // Display Dynamic Hits
-      display[nb_pts] = current_scan[loop];
-      // Blue Color
-      colors[nb_pts].r = 0;
-      colors[nb_pts].g = 0;
-      colors[nb_pts].b = 1;
-      colors[nb_pts].a = 1.0;
+        // 1/ we end the current cluster, so we update:
+        // - end to store the last hit of the current cluster
+        end = loop-1;
 
-      nb_pts++;
-      }
+        // - cluster_size to store the size of the cluster ie, the euclidian distance between the first hit of the cluster and the last one
+        cluster_size[nb_cluster] = distancePoints(current_scan[start], current_scan[end]);
+
+        // - cluster_middle to store the middle of the cluster
+        cluster_middle[nb_cluster] = current_scan[(start + end)/2];
+        
+        // - cluster_dynamic to store the percentage of hits of the current cluster that are dynamic
+        cluster_dynamic[nb_cluster] = dynamic_pts_percentage;
+        dynamic_pts_percentage = 0; // reset for next cluster
+        // 2/ we start a new cluster with the current hit
+        nb_cluster++;
+        start = loop;
+        }
+        else
+        {
+            cluster[loop] = nb_cluster;
+            if (detector_.getDynamicrArr[loop])
+                dynamic_pts_percentage++;
+        }
+
     }
-    if (nb_pts>0)
-      ROS_INFO("nb_pts %i", nb_pts);
-      populateMarkerTopic(pub_detection_marker_, nb_pts, display, colors);
-  }
-  else if (!init_robot)
-    ROS_WARN("waiting for robot_moving_node");
 }
 
 }
