@@ -39,9 +39,7 @@
 //to decide if a cluster is static or dynamic
 #define DYNAMIC_THRESHOLD 75 
 
-#include <tutorial_ros/utility.h>
 #include <follow_me/simple_clustering.h>
-#include <follow_me/simple_motion_detection.h>
 
 namespace robair{
 /***********************************************************************************************************************
@@ -52,21 +50,22 @@ namespace robair{
  * Primary methods
  */
 
-SimpleClustering::SimpleClustering(ros::NodeHandle& nh){
+SimpleClustering::SimpleClustering(){
     // Initialization
-    init();
-    SimpleMotionDetection detector_(input_laser_scan);
-    performClustering();
+    // init(geometry_msgs::Point (&current_scan)[1000]);
 }
 
-bool SimpleClustering::init(){
+bool SimpleClustering::init(int &num_beams, geometry_msgs::Point (&current_scan)[1000], bool (&dynamic)[1000]){
     // To Do Some Checks and Initializations.
     nb_cluster = 0;
+    nb_beams = num_beams;
+    std::copy(std::begin(current_scan), std::end(current_scan), std::begin(scan_pts));
+    std::copy(std::begin(dynamic), std::end(dynamic), std::begin(dynamic_));
+
     return true;
 }
 
 void SimpleClustering::performClustering(){
-    ROS_INFO("performing clustering");
 
     //initialization of the first cluster
     int start = 0;// the first hit is the start of the first cluster
@@ -76,7 +75,7 @@ void SimpleClustering::performClustering(){
     // loop over all the hits
     for( int loop=1; loop<nb_beams; loop++ ){
         // if EUCLIDIAN DISTANCE between (the previous hit and the current one) is higher than "CLUSTER_THRESHOLD"
-        if(distancePoints(current_scan[loop], current_scan[loop-1]) > CLUSTER_THRESHOLD)
+        if(distancePoints(scan_pts[loop], scan_pts[loop-1]) > CLUSTER_THRESHOLD)
         {
         //the current hit doesnt belong to the same hit
         cluster[loop-1] = nb_cluster;
@@ -88,10 +87,10 @@ void SimpleClustering::performClustering(){
         end = loop-1;
 
         // - cluster_size to store the size of the cluster ie, the euclidian distance between the first hit of the cluster and the last one
-        cluster_size[nb_cluster] = distancePoints(current_scan[start], current_scan[end]);
+        cluster_size[nb_cluster] = distancePoints(scan_pts[start], scan_pts[end]);
 
         // - cluster_middle to store the middle of the cluster
-        cluster_middle[nb_cluster] = current_scan[(start + end)/2];
+        cluster_middle[nb_cluster] = scan_pts[(start + end)/2];
         
         // - cluster_dynamic to store the percentage of hits of the current cluster that are dynamic
         cluster_dynamic[nb_cluster] = dynamic_pts_percentage;
@@ -103,11 +102,15 @@ void SimpleClustering::performClustering(){
         else
         {
             cluster[loop] = nb_cluster;
-            if (detector_.getDynamicrArr[loop])
+            if (dynamic_[loop])
                 dynamic_pts_percentage++;
         }
-
     }
 }
 
+
+float SimpleClustering::distancePoints(geometry_msgs::Point &pa, geometry_msgs::Point &pb) {
+
+    return sqrt(pow((pa.x-pb.x),2.0) + pow((pa.y-pb.y),2.0));
+}
 }

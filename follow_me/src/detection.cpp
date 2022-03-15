@@ -77,7 +77,7 @@ bool Detection::init(ros::NodeHandle& nh){
     
     previous_robot_moving = true;
     
-    m_detect_.setStoredBackground(false);
+    motion_detector_.setStoredBackground(false);
 
     return true;
 }
@@ -85,10 +85,10 @@ bool Detection::init(ros::NodeHandle& nh){
 void Detection::update()
 {
   detectMotion();
+  simpleClustering();
 }
 
 void Detection::detectMotion(){
-  int nb_pts = 0;
   // we wait for new data of the laser and of the robot_moving_node to perform laser processing
   if (new_laser && init_robot)
   {
@@ -96,12 +96,20 @@ void Detection::detectMotion(){
     ROS_INFO("New data of laser received");
     ROS_INFO("New data of robot_moving received");
 
-    m_detect_.init(nb_beams, r, current_robot_moving, previous_robot_moving);
-    m_detect_.run();
+    motion_detector_.init(nb_beams, r, current_robot_moving, previous_robot_moving);
+    motion_detector_.run();
+    for (int loop = 0; loop < nb_beams; loop++)
+      dynamic_[loop] = motion_detector_.getDynamicrArr()[loop];
+    visualizeMotion();
+    }
+  else if (!init_robot)
+    ROS_WARN("waiting for robot_moving_node");
+}
 
+void Detection::visualizeMotion(){
     // graphical display of the results
+    int nb_pts = 0;
     for (int loop = 0; loop < nb_beams; loop++){
-      dynamic_[loop] = m_detect_.getDynamicrArr()[loop];
       if(dynamic_[loop]){
       // Display Dynamic Hits
       display[nb_pts] = current_scan[loop];
@@ -117,9 +125,17 @@ void Detection::detectMotion(){
     if (nb_pts>0)
       ROS_INFO("nb_pts %i", nb_pts);
       populateMarkerTopic(pub_detection_marker_, nb_pts, display, colors);
-  }
-  else if (!init_robot)
-    ROS_WARN("waiting for robot_moving_node");
 }
 
+void Detection::simpleClustering(){
+
+  simple_clustering_.init(nb_beams, current_scan, dynamic_);
+  ROS_INFO("performing clustering");
+  simple_clustering_.performClustering();
+  // visualizeClustering();
+}
+
+// void Detection::visualizeClustering(){
+
+// }
 }

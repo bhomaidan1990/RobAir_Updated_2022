@@ -49,17 +49,24 @@ public:
     /**
      * \brief Default Class Constructor.
      */
-    SimpleClustering(ros::NodeHandle& nh);
+    SimpleClustering();
 
     /**
      * \brief Initialization.
      */
-    bool init();
+    bool init(int &num_beams, geometry_msgs::Point (&current_scan)[1000], bool (&dynamic)[1000]);
 
     /**
      * \brief Clustering Function.
      */
     void performClustering();
+
+    /**
+     * \brief Eucledian Distance Between Two Points.
+     *
+     * \return float Eucledian Distance in Meters.
+     */
+    float distancePoints(geometry_msgs::Point &pa, geometry_msgs::Point &pb);
 
     //------------------------------------
     // Getter Functions 
@@ -103,6 +110,11 @@ public:
 private:
 
     /**
+     * \brief Number of Laser Scan Beams.
+     */
+    int nb_beams;
+
+    /**
      * \brief Raw Laser Scan to Cluster.
      */      
     geometry_msgs::Point scan_pts[1000];
@@ -131,6 +143,11 @@ private:
      * \brief Percentage of Dynamic Cluster.
      */      
     int cluster_dynamic[1000];
+    
+    /**
+     * \brief TODO.
+     */  
+    bool dynamic_[1000];
 };
 
 }

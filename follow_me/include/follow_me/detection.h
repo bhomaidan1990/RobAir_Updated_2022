@@ -41,6 +41,7 @@
 
 #include "ros/ros.h"
 #include <follow_me/simple_motion_detection.h>
+#include <follow_me/simple_clustering.h>
 
 namespace robair{
 
@@ -61,7 +62,26 @@ public:
      */
     void update();
 
+    /**
+     * \brief Motion Detection.
+     */
     void detectMotion();
+
+    /**
+     * \brief Visualize Motion Detection.
+     */
+    void visualizeMotion();
+
+    /**
+     * \brief Perform Clustering.
+     */
+    void simpleClustering();
+
+    // /**
+    //  * \brief Visualize Clustering.
+    //  */
+    // void visualizeClustering();
+
 
 private:
     /**
@@ -78,13 +98,21 @@ private:
      * \brief Detection Node Publisher.
      */  
     ros::Publisher pub_detection_node_;
-    
-    SimpleMotionDetection m_detect_;
+
+    /**
+     * \brief Motion Detection Object.
+     */      
+    SimpleMotionDetection motion_detector_;
 
     /**
      * \brief TODO.
      */  
     bool dynamic_[1000];
+
+    /**
+     * \brief Clustering Object.
+     */      
+    SimpleClustering simple_clustering_;
 };
 }
 

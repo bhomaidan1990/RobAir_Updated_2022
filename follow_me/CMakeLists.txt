@@ -100,6 +100,7 @@ set(target_name detection)
 ## Declare a C++ executable
 add_executable(${target_name}
   src/simple_motion_detection.cpp
+  src/simple_clustering.cpp
   src/${target_name}_node.cpp
   src/${target_name}.cpp
 )
