@@ -77,10 +77,10 @@ public:
      */
     void simpleClustering();
 
-    // /**
-    //  * \brief Visualize Clustering.
-    //  */
-    // void visualizeClustering();
+    /**
+     * \brief Visualize Clustering.
+     */
+    void visualizeClustering();
 
 
 private:
@@ -107,12 +107,37 @@ private:
     /**
      * \brief TODO.
      */  
-    bool dynamic_[1000];
+    bool dynamic[1000];
 
     /**
      * \brief Clustering Object.
      */      
     SimpleClustering simple_clustering_;
+
+    /**
+     * \brief Num of Clusters.
+     */  
+    int nb_cluster;
+
+    /**
+     * \brief Laser Scans Cluster ID.
+     */      
+    int cluster[1000]; 
+
+    /**
+     * \brief Cluster Sizes.
+     */      
+    float cluster_distance[1000];
+
+    /**
+     * \brief Middle of Each Cluster.
+     */      
+    geometry_msgs::Point cluster_middle[1000];
+
+    /**
+     * \brief Dynamic Clusters.
+     */      
+    bool cluster_dynamic[1000];    
 };
 }
 

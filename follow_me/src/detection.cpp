@@ -95,11 +95,13 @@ void Detection::detectMotion(){
     ROS_INFO("\n");
     ROS_INFO("New data of laser received");
     ROS_INFO("New data of robot_moving received");
-
+    // Perform Motion Detection
     motion_detector_.init(nb_beams, r, current_robot_moving, previous_robot_moving);
     motion_detector_.run();
+    // Read Motion Detection Results
     for (int loop = 0; loop < nb_beams; loop++)
-      dynamic_[loop] = motion_detector_.getDynamicrArr()[loop];
+      dynamic[loop] = motion_detector_.getDynamicrArr()[loop];
+    // Visualize the Results
     visualizeMotion();
     }
   else if (!init_robot)
@@ -110,7 +112,7 @@ void Detection::visualizeMotion(){
     // graphical display of the results
     int nb_pts = 0;
     for (int loop = 0; loop < nb_beams; loop++){
-      if(dynamic_[loop]){
+      if(dynamic[loop]){
       // Display Dynamic Hits
       display[nb_pts] = current_scan[loop];
       // Blue Color
@@ -128,14 +130,91 @@ void Detection::visualizeMotion(){
 }
 
 void Detection::simpleClustering(){
-
-  simple_clustering_.init(nb_beams, current_scan, dynamic_);
+  // Perform Clustering
+  simple_clustering_.init(nb_beams, current_scan, dynamic);
   ROS_INFO("performing clustering");
   simple_clustering_.performClustering();
-  // visualizeClustering();
+  // Read Clustering Results
+  nb_cluster = simple_clustering_.getNumClusters();
+  for (int loop = 0; loop < nb_beams; loop++){
+    cluster[loop]          = simple_clustering_.getClusterArr()[loop];
+    cluster_middle[loop]   = simple_clustering_.getClusterMiddle()[loop];
+    cluster_distance[loop] = simple_clustering_.getClusterDistance()[loop];
+    cluster_dynamic[loop]  = simple_clustering_.getClusterDynamic()[loop];
+  }
+  // Visualize the Results
+  visualizeClustering();
 }
 
-// void Detection::visualizeClustering(){
+void Detection::visualizeClustering(){
+  //graphical display
+  int nb_pts = 0;
+  int start = 0;
+  int end;
+  int cluster_id = 0;
+  // the start of the current cluster
+  display[nb_pts] = current_scan[start];
+  // Green Color
+  colors[nb_pts].r = 0;
+  colors[nb_pts].g = 1;
+  colors[nb_pts].b = 0;
+  colors[nb_pts].a = 1.0;
+  nb_pts++;
 
-// }
+  for( int loop=1; loop<nb_beams; loop++ )//loop over all the hits
+  {
+    //if (two consequtive points don't belong to the same cluster){
+      //the current hit doesnt belong to the same cluster
+    if(cluster[loop-1]!=cluster[loop]){
+      end = loop - 1;
+      // graphical display of the end of the current cluster
+      display[nb_pts] = current_scan[end];
+      // Red Color
+      colors[nb_pts].r = 1;
+      colors[nb_pts].g = 0;
+      colors[nb_pts].b = 0;
+      colors[nb_pts].a = 1.0;
+      nb_pts++;
+
+      //textual display
+      ROS_INFO("cluster[%i] = (%f, %f): hit[%i](%f, %f) -> hit[%i](%f, %f), distance: %f, dynamic: %d", cluster_id,
+                                                                            cluster_middle[cluster_id].x,
+                                                                            cluster_middle[cluster_id].y,
+                                                                            start,
+                                                                            current_scan[start].x,
+                                                                            current_scan[start].y,
+                                                                            end,
+                                                                            current_scan[end].x,
+                                                                            current_scan[end].y,
+                                                                            cluster_distance[cluster_id],
+                                                                            cluster_dynamic[cluster_id]);
+
+      //graphical display of the middle of the current cluster
+      display[nb_pts] = cluster_middle[cluster_id];
+      // Light Blue
+      colors[nb_pts].r = 0.2;
+      colors[nb_pts].g = 0.2;
+      colors[nb_pts].b = 1;
+      colors[nb_pts].a = 1.0;
+      nb_pts++;
+
+      cluster_id++;
+
+      // graphical display of the start of the current cluster
+      start = loop;
+      display[nb_pts] = current_scan[start];
+      // Green
+      colors[nb_pts].r = 0;
+      colors[nb_pts].g = 1;
+      colors[nb_pts].b = 0;
+      colors[nb_pts].a = 1.0;
+      nb_pts++;
+    }
+  }
+  if (nb_pts>0)
+  ROS_INFO("nb_pts %i", nb_pts);
+  populateMarkerTopic(pub_detection_marker_, nb_pts, display, colors);
 }
+
+}
+

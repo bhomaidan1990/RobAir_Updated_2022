@@ -86,15 +86,20 @@ void SimpleClustering::performClustering(){
         // - end to store the last hit of the current cluster
         end = loop-1;
 
-        // - cluster_size to store the size of the cluster ie, the euclidian distance between the first hit of the cluster and the last one
-        cluster_size[nb_cluster] = distancePoints(scan_pts[start], scan_pts[end]);
+        // - cluster_distance to store the size of the cluster ie, the euclidian distance between the first hit of the cluster and the last one
+        cluster_distance[nb_cluster] = distancePoints(scan_pts[start], scan_pts[end]);
 
         // - cluster_middle to store the middle of the cluster
         cluster_middle[nb_cluster] = scan_pts[(start + end)/2];
         
-        // - cluster_dynamic to store the percentage of hits of the current cluster that are dynamic
-        cluster_dynamic[nb_cluster] = dynamic_pts_percentage;
-        dynamic_pts_percentage = 0; // reset for next cluster
+        // - cluster_dynamic to store cluster status dynamic/static
+        if(dynamic_pts_percentage>DYNAMIC_THRESHOLD)
+            cluster_dynamic[nb_cluster] = true; // dynamic
+        else
+            cluster_dynamic[nb_cluster] = false; // static
+        
+        // reset for next cluster
+        dynamic_pts_percentage = 0; 
         // 2/ we start a new cluster with the current hit
         nb_cluster++;
         start = loop;

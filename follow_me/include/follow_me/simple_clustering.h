@@ -72,38 +72,39 @@ public:
     // Getter Functions 
     //------------------------------------
     // Num of Clusters Getter
-    const int getNumClusters(){
+    int getNumClusters(){
         return nb_cluster;
     }
+
+   /**
+     * \brief To Get the Cluster
+    * \return Static int Array cluster_distance
+    */  
+    int *getClusterArr(){
+        return cluster;
+    }
+
    /**
      * \brief To Get the Middle Point of a Cluster.
     * \return Static geometry_msgs::Point Array cluster_middle
     */ 
-    const geometry_msgs::Point *getClusterMiddle() const{
+    geometry_msgs::Point *getClusterMiddle(){
         return cluster_middle;
-    }
-
-   /**
-     * \brief To Get the Cluster Size
-    * \return Static int Array cluster_size
-    */  
-    const int *getClusterArr() const{
-        return cluster;
     }
 
     /**
      * \brief To Get the Cluster Euclidean Distance
-    * \return Static int Array cluster_size
+    * \return Static int Array cluster_distance
     */ 
-    const float *getClusterSize() const{
-        return cluster_size;
+    float *getClusterDistance(){
+        return cluster_distance;
     }
 
     /**
      * \brief To Get the 100 * Percentage of Dynamic Points Inside a Cluster
-    * \return Static Array cluster_dynamic
+    * \return Static bool Array cluster_dynamic
     */ 
-    const int *getClusterDynamic() const{
+    bool *getClusterDynamic(){
         return cluster_dynamic;
     }
 
@@ -132,7 +133,7 @@ private:
     /**
      * \brief Cluster Sizes.
      */      
-    float cluster_size[1000];
+    float cluster_distance[1000];
 
     /**
      * \brief Middle of Each Cluster.
@@ -140,12 +141,12 @@ private:
     geometry_msgs::Point cluster_middle[1000];
 
     /**
-     * \brief Percentage of Dynamic Cluster.
+     * \brief Dynamic Clusters.
      */      
-    int cluster_dynamic[1000];
+    bool cluster_dynamic[1000];
     
     /**
-     * \brief TODO.
+     * \brief Dynamic Laser Scan Hits.
      */  
     bool dynamic_[1000];
 };
