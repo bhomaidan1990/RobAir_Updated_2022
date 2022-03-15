@@ -47,17 +47,11 @@ namespace robair{
 /***********************************************************
  * Primary methods
  */
-SimpleMotionDetection::SimpleMotionDetection()
-{
-    // Initialization
-    // init();
-}
-
 bool SimpleMotionDetection::init(int &num_beams, float (& r_)[1000], bool curr_robot_moving, bool prev_robot_moving){
+    
     nb_beams = num_beams;
-    setCurrentRobotMoving(curr_robot_moving);
+    current_robot_moving = curr_robot_moving;
     previous_robot_moving = prev_robot_moving;
-
     std::copy(std::begin(r_), std::end(r_), std::begin(r));
 
   return true;
@@ -66,13 +60,12 @@ bool SimpleMotionDetection::init(int &num_beams, float (& r_)[1000], bool curr_r
 void SimpleMotionDetection::run(){
   if (!current_robot_moving)
   {
+    resetMotion();
     // if the robot is not moving then we can perform moving person detection
     if (stored_background)
       detectMotion();
     // DO NOT FORGET to store the background but when ???
-    if (previous_robot_moving)
-      storeBackground();
-
+    storeBackground();
     ROS_INFO("robot is not moving");
     }
     else
@@ -118,7 +111,6 @@ void SimpleMotionDetection::resetMotion(){
   ROS_INFO("reset motion");
   for (int loop = 0; loop < nb_beams; loop++)
       dynamic[loop] = false;
-  stored_background = false;
   ROS_INFO("reset_motion done");
 }
 

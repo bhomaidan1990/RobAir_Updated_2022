@@ -49,7 +49,7 @@ public:
     /**
      * \brief Default Class Constructor.
      */
-    SimpleMotionDetection();
+    SimpleMotionDetection(){}
 
     /**
      * \brief Initialization.
@@ -95,18 +95,7 @@ public:
     void setStoredBackground(bool val){
         stored_background = val;
     }
-    /**
-     * \brief Set current_robot_moving Value.
-     */ 
-    void setCurrentRobotMoving(bool val){
-        current_robot_moving = val;
-    }
-    /**
-     * \brief Set r Values.
-     */ 
-    void setR(float (& r_)[1000]){
-        std::copy(std::begin(r_), std::end(r_), std::begin(r));;
-    }
+
 private:
 
     /**
