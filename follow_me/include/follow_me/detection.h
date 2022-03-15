@@ -42,6 +42,7 @@
 #include "ros/ros.h"
 #include <follow_me/simple_motion_detection.h>
 #include <follow_me/simple_clustering.h>
+#include <follow_me/detect_legs.h>
 
 namespace robair{
 
@@ -82,6 +83,15 @@ public:
      */
     void visualizeClustering();
 
+    /**
+     * \brief Perform Legs Detection.
+     */
+    void detectLegs();
+
+    /**
+     * \brief Visualize Legs.
+     */
+    void visualizeLegs();
 
 private:
     /**
@@ -100,6 +110,14 @@ private:
     ros::Publisher pub_detection_node_;
 
     /**
+     * \brief Max Num of Points to Parse.
+     */
+    int max_pts;
+
+    //------------------------------------
+    // Motion Detection
+    //------------------------------------
+    /**
      * \brief Motion Detection Object.
      */      
     SimpleMotionDetection motion_detector_;
@@ -109,6 +127,9 @@ private:
      */  
     bool dynamic[1000];
 
+    //------------------------------------
+    // Clustering
+    //------------------------------------
     /**
      * \brief Clustering Object.
      */      
@@ -139,10 +160,34 @@ private:
      */      
     bool cluster_dynamic[1000];
 
+    //------------------------------------
+    // Legs Detection
+    //------------------------------------
     /**
-     * \brief Max Num of Points to Parse.
-     */  
-    int max_pts;
+     * \brief Legs Detection Object.
+     */     
+    DetectLegs legs_detector_;
+
+    /**
+     * \brief Num of Detected Legs.
+     */
+    int nb_legs_detected;
+
+    /**
+     * \brief Detected Legs Mid Points.
+     */
+    geometry_msgs::Point leg_detected[1000];
+
+    /**
+     * \brief Leg Cluster.
+     */
+    int leg_cluster[1000];
+
+    /**
+     * \brief Dynamic Leg (Moving).
+     */
+    bool leg_dynamic[1000];
+
 };
 }
 

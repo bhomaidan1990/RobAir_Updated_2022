@@ -50,11 +50,6 @@ namespace robair{
  * Primary methods
  */
 
-SimpleClustering::SimpleClustering(){
-    // Initialization
-    // init(geometry_msgs::Point (&current_scan)[1000]);
-}
-
 bool SimpleClustering::init(int &num_beams, geometry_msgs::Point (&current_scan)[1000], bool (&dynamic)[1000]){
     // To Do Some Checks and Initializations.
     nb_clusters = 0;

@@ -49,7 +49,7 @@ public:
     /**
      * \brief Default Class Constructor.
      */
-    SimpleClustering();
+    SimpleClustering(){}
 
     /**
      * \brief Initialization.
@@ -71,7 +71,10 @@ public:
     //------------------------------------
     // Getter Functions 
     //------------------------------------
-    // Num of Clusters Getter
+   /**
+     * \brief To Get the Num of Clusters
+    * \return Static int nb_clusters
+    */  
     int getNumClusters(){
         return nb_clusters;
     }
@@ -128,7 +131,7 @@ private:
     /**
      * \brief Laser Scans Cluster ID.
      */      
-    int cluster[1000]; 
+    int cluster[1000];
 
     /**
      * \brief Cluster Sizes.

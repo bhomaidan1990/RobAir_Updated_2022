@@ -38,6 +38,8 @@
 #define LEG_SIZE_MIN 0.05
 #define LEG_SIZE_MAX 0.25
 
+#include <follow_me/detect_legs.h>
+
 namespace robair{
 /***********************************************************************************************************************
  * Class definitions: Simple Motion Detection
@@ -46,5 +48,34 @@ namespace robair{
 /***********************************************************
  * Primary methods
  */
+DetectLegs::DetectLegs(){
 
+}
+
+bool DetectLegs::init(int &num_clusters,  float (&cluster_distance)[1000], 
+              geometry_msgs::Point (&cluster_middle)[1000], bool (&cluster_dynamic)[1000]){
+    // Initialization
+    nb_clusters = num_clusters;
+    std::copy(std::begin(cluster_distance), std::end(cluster_distance), std::begin(cluster_distance_));
+    std::copy(std::begin(cluster_middle), std::end(cluster_middle), std::begin(cluster_middle_));
+    std::copy(std::begin(cluster_dynamic), std::end(cluster_dynamic), std::begin(cluster_dynamic_));
+
+    return true;
+}
+
+void DetectLegs::detectLegs(){
+    nb_legs_detected = 0;
+
+    for (int c_id = 0; c_id < nb_clusters; c_id++){
+        
+        if(cluster_distance_[c_id]>LEG_SIZE_MIN && cluster_distance_[c_id]<LEG_SIZE_MAX){
+            // Leg Detected
+            nb_legs_detected++;
+            // Store the Middle Point
+            leg_detected[c_id] = cluster_middle_[c_id];
+            // Store Dynamic status
+            leg_dynamic[c_id] = cluster_dynamic_[c_id];
+        }
+    }
+}
 }

@@ -101,6 +101,7 @@ set(target_name detection)
 add_executable(${target_name}
   src/simple_motion_detection.cpp
   src/simple_clustering.cpp
+  src/detect_legs.cpp
   src/${target_name}_node.cpp
   src/${target_name}.cpp
 )
