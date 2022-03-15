@@ -75,41 +75,48 @@ void SimpleClustering::performClustering(){
         // if EUCLIDIAN DISTANCE between (the previous hit and the current one) is higher than "CLUSTER_THRESHOLD"
         if(distancePoints(scan_pts[loop], scan_pts[loop-1]) > CLUSTER_THRESHOLD)
         {
-        //the current hit doesnt belong to the same hit
-        // 1/ we end the current cluster, so we update:
-        // - end to store the last hit of the current cluster
-        end = loop-1;
+            //the current hit doesnt belong to the same hit
+            // 1/ we end the current cluster, so we update:
+            // - end to store the last hit of the current cluster
+            end = loop-1;
 
-        cluster[end] = nb_clusters;
-        // Ignore one point cluster (noise)
-        if((end - start)>0){
-            dynamic_pts_percentage = 100 * dynamic_pts_percentage / (end - start);
+            // Ignore single point cluster (noise)
+            if((end - start)>0){
 
-            // ROS_INFO("dynamic_pts_percentage %i", dynamic_pts_percentage);
-            
-            // - cluster_distance to store the size of the cluster ie, the euclidian distance between the first hit of the cluster and the last one
-            cluster_distance[nb_clusters] = distancePoints(scan_pts[start], scan_pts[end]);
+                cluster[end] = nb_clusters;
+                // Num of pts in Cluster
+                cluster_size[nb_clusters] = end - start;
+                dynamic_pts_percentage = 100 * dynamic_pts_percentage / (end - start);
 
-            // - cluster_middle to store the middle of the cluster
-            cluster_middle[nb_clusters] = scan_pts[(start + end)/2];
-            
-            // - cluster_dynamic to store cluster status dynamic/static
-            if(dynamic_pts_percentage>DYNAMIC_THRESHOLD)
-                cluster_dynamic[nb_clusters] = true; // dynamic
-            else
-                cluster_dynamic[nb_clusters] = false; // static
-            
+                // ROS_INFO("dynamic_pts_percentage %i", dynamic_pts_percentage);
+                
+                // - cluster_distance to store the size of the cluster ie, the euclidian distance between the first hit of the cluster and the last one
+                cluster_distance[nb_clusters] = distancePoints(scan_pts[start], scan_pts[end]);
+
+                // - cluster_middle to store the middle of the cluster
+                cluster_middle[nb_clusters] = scan_pts[(start + end)/2];
+                
+                // - cluster_dynamic to store cluster status dynamic/static
+                if(dynamic_pts_percentage>DYNAMIC_THRESHOLD)
+                    cluster_dynamic[nb_clusters] = true; // dynamic
+                else
+                    cluster_dynamic[nb_clusters] = false; // static
+                
+            }
+            else{
+                // Noise Singular Point
+                cluster[end] = -1; // Noise Label
+            }
             // reset for next cluster
-            dynamic_pts_percentage = 0; 
+            dynamic_pts_percentage = 0;            
             // 2/ we start a new cluster with the current hit
             nb_clusters++;
             start = loop;
+        
         }
-        }
-        else
-        {
-            cluster[loop] = nb_clusters;
-            if (dynamic_[loop])
+        else{
+            cluster[loop-1] = nb_clusters;
+            if (dynamic_[loop-1])
                 dynamic_pts_percentage++;
         }
     }

@@ -80,7 +80,7 @@ public:
     }
 
    /**
-     * \brief To Get the Cluster
+     * \brief To Get Cluster Labels
     * \return Static int Array cluster_distance
     */  
     int *getClusterArr(){
@@ -101,6 +101,14 @@ public:
     */ 
     float *getClusterDistance(){
         return cluster_distance;
+    }
+
+   /**
+     * \brief To Get Cluster Size
+    * \return Static int Array cluster_size
+    */  
+    int *getClusterSize(){
+        return cluster_size;
     }
 
     /**
@@ -129,9 +137,14 @@ private:
     int nb_clusters;
 
     /**
-     * \brief Laser Scans Cluster ID.
+     * \brief Laser Scans Cluster Labels.
      */      
     int cluster[1000];
+
+    /**
+     * \brief Cluster Size (Num of pts).
+     */      
+    int cluster_size[1000];
 
     /**
      * \brief Cluster Sizes.
