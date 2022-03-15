@@ -90,8 +90,14 @@ void Detection::update()
   simpleClustering();
   detectLegs();
   /* Visualization */
-  if(max_pts>0)
-    populateMarkerTopic(pub_detection_marker_, max_pts, display, colors);
+  // if(max_pts>0)
+  //   populateMarkerTopic(pub_detection_marker_, max_pts, display, colors);
+}
+
+void Detection::resetVisio(){
+  for( int loop=1; loop<nb_beams; loop++ )//loop over all the hits
+    // hide points
+    colors[loop].a = 0.0;
 }
 
 void Detection::detectMotion(){
@@ -116,28 +122,31 @@ void Detection::detectMotion(){
 }
 
 void Detection::visualizeMotion(){
-    // graphical display of the results
-    int nb_pts = 0;
-    for (int loop = 0; loop < nb_beams; loop++){
-      if(dynamic[loop]){
-        
-        ROS_INFO("Hit [%i] is dynamic.",loop);
+  resetVisio();
+  // graphical display of the results
+  int nb_pts = 0;
+  for (int loop = 0; loop < nb_beams; loop++)
+  {
+    if (dynamic[loop])
+    {
 
-        // Display Dynamic Hits
-        display[nb_pts] = current_scan[loop];
-        // Blue Color
-        colors[nb_pts].r = 0;
-        colors[nb_pts].g = 0;
-        colors[nb_pts].b = 1;
-        colors[nb_pts].a = 1.0;
+      ROS_INFO("Hit [%i] is dynamic.", loop);
 
-        nb_pts++;
-      }
+      // Display Dynamic Hits
+      display[nb_pts] = current_scan[loop];
+      // Blue Color
+      colors[nb_pts].r = 0;
+      colors[nb_pts].g = 0;
+      colors[nb_pts].b = 1;
+      colors[nb_pts].a = 1.0;
+
+      nb_pts++;
+    }
     }
     if (nb_pts>max_pts)
       max_pts = nb_pts;
-    // ROS_INFO("nb_pts %i", nb_pts);
-    // populateMarkerTopic(pub_detection_marker_, nb_pts, display, colors);
+  if(max_pts>0)
+    populateMarkerTopic(pub_detection_marker_, max_pts, display, colors);
 }
 
 void Detection::simpleClustering(){
@@ -159,6 +168,7 @@ void Detection::simpleClustering(){
 }
 
 void Detection::visualizeClustering(){
+  resetVisio();
   //graphical display
   int nb_pts = 0;
   int start = 0;
@@ -176,8 +186,8 @@ void Detection::visualizeClustering(){
   for( int loop=1; loop<nb_beams; loop++ )//loop over all the hits
   {
     //if (two consequtive points don't belong to the same cluster){
-      //the current hit doesnt belong to the same cluster
-    if(cluster[loop]!=cluster[loop-1]){
+      //the current hit doesnt belong to the same cluster, and not noise
+    if(cluster[loop]!=cluster[loop-1] && cluster[loop] !=-1){
       end = loop - 1;
       // graphical display of the end of the current cluster
       display[nb_pts] = current_scan[end];
@@ -226,14 +236,13 @@ void Detection::visualizeClustering(){
   }
   if (nb_pts>max_pts)
     max_pts = nb_pts;
-  // ROS_INFO("nb_pts %i", nb_pts);
-  // populateMarkerTopic(pub_detection_marker_, nb_pts, display, colors);
+  if(max_pts>0)
+    populateMarkerTopic(pub_detection_marker_, max_pts, display, colors);
 }
 
 void Detection::detectLegs(){
   // Perform Legs Detection
   legs_detector_.init(nb_clusters, cluster_distance, cluster_middle, cluster_dynamic);
-  ROS_INFO("detecting legs");
   legs_detector_.detectLegs();
   // Read Legs Detection Results
   nb_legs_detected = legs_detector_.getNumLegs();
@@ -243,20 +252,22 @@ void Detection::detectLegs(){
     leg_cluster[leg_nb]  = legs_detector_.getLegCluster()[leg_nb]; // int arr
     leg_dynamic[leg_nb]  = legs_detector_.getLegDynamic()[leg_nb]; // bool arr
   }
-  ROS_INFO("detecting legs done");
   // Visualize the Results
   visualizeLegs();
 }
 
 void Detection::visualizeLegs(){
+  resetVisio();
   int nb_pts = 0;
   //loop over all the clusters
   for (int c_id = 0; c_id<nb_clusters; c_id++)
-    if (cluster_middle[c_id]==leg_detected[c_id]){
-      //then the current cluster is a leg
+    // if the cluster is Leg
+    if (cluster_middle[c_id]==leg_detected[c_id])
+    {
+      // Moving Leg
       if ( leg_dynamic[c_id] )
       {
-        ROS_INFO("moving leg found: %i -> cluster = %i, (%f, %f), size: %f, dynamic: %i", nb_legs_detected,
+        ROS_INFO("moving leg found: %i -> cluster = %i, (%f, %f), distance: %f, dynamic: %i", nb_legs_detected,
                                                                                           c_id,
                                                                                           leg_detected[c_id].x,
                                                                                           leg_detected[c_id].y,
@@ -276,8 +287,8 @@ void Detection::visualizeLegs(){
           }
       }
       else
-      {
-        ROS_INFO("static leg found: %i -> cluster = %i, (%f, %f), size: %f, dynamic: %i", nb_legs_detected,
+      { // Static Leg
+        ROS_INFO("static leg found: %i -> cluster = %i, (%f, %f), distance: %f, dynamic: %i", nb_legs_detected,
                                                                                           c_id,
                                                                                           leg_detected[c_id].x,
                                                                                           leg_detected[c_id].y,
@@ -303,8 +314,9 @@ void Detection::visualizeLegs(){
     ROS_INFO("%d legs have been detected.\n", nb_legs_detected);
 
   if (nb_pts>max_pts)
-    max_pts = nb_pts;
+      max_pts = nb_pts;
+  if(max_pts>0)
+    populateMarkerTopic(pub_detection_marker_, max_pts, display, colors);
 }
 
 }
-

@@ -64,6 +64,11 @@ public:
     void update();
 
     /**
+     * \brief Reset Visual Results.
+     */
+    void resetVisio();
+
+    /**
      * \brief Motion Detection.
      */
     void detectMotion();

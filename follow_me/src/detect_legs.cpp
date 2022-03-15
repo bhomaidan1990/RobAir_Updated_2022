@@ -39,6 +39,7 @@
 #define LEG_SIZE_MAX 0.25
 
 #include <follow_me/detect_legs.h>
+#include "ros/ros.h"
 
 namespace robair{
 /***********************************************************************************************************************
@@ -64,7 +65,10 @@ bool DetectLegs::init(int &num_clusters,  float (&cluster_distance)[1000],
 }
 
 void DetectLegs::detectLegs(){
+
     nb_legs_detected = 0;
+
+    ROS_INFO("detecting legs");
 
     for (int c_id = 0; c_id < nb_clusters; c_id++){
         
@@ -77,5 +81,7 @@ void DetectLegs::detectLegs(){
             leg_dynamic[c_id] = cluster_dynamic_[c_id];
         }
     }
+    ROS_INFO("detecting legs done");
+    ROS_INFO("There are [%i] legs here!", nb_legs_detected);
 }
 }
