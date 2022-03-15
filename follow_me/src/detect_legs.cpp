@@ -38,8 +38,6 @@
 #define LEG_SIZE_MIN 0.05
 #define LEG_SIZE_MAX 0.25
 
-#include <tutorial_ros/utility.h>
-
 namespace robair{
 /***********************************************************************************************************************
  * Class definitions: Simple Motion Detection

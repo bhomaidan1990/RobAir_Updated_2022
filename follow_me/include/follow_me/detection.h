@@ -137,7 +137,12 @@ private:
     /**
      * \brief Dynamic Clusters.
      */      
-    bool cluster_dynamic[1000];    
+    bool cluster_dynamic[1000];
+
+    /**
+     * \brief Max Num of Points to Parse.
+     */  
+    int max_pts;
 };
 }
 

@@ -76,7 +76,9 @@ bool Detection::init(ros::NodeHandle& nh){
     init_robot = false;
     
     previous_robot_moving = true;
-    
+
+    max_pts = 0;
+
     motion_detector_.setStoredBackground(false);
 
     return true;
@@ -86,6 +88,9 @@ void Detection::update()
 {
   detectMotion();
   simpleClustering();
+  // Visualization
+  if(max_pts>0)
+    populateMarkerTopic(pub_detection_marker_, max_pts, display, colors);
 }
 
 void Detection::detectMotion(){
@@ -124,9 +129,10 @@ void Detection::visualizeMotion(){
       nb_pts++;
       }
     }
-    if (nb_pts>0)
-      ROS_INFO("nb_pts %i", nb_pts);
-      populateMarkerTopic(pub_detection_marker_, nb_pts, display, colors);
+    if (nb_pts>max_pts)
+      max_pts = nb_pts;
+    // ROS_INFO("nb_pts %i", nb_pts);
+    // populateMarkerTopic(pub_detection_marker_, nb_pts, display, colors);
 }
 
 void Detection::simpleClustering(){
@@ -136,14 +142,14 @@ void Detection::simpleClustering(){
   simple_clustering_.performClustering();
   // Read Clustering Results
   nb_clusters = simple_clustering_.getNumClusters();
-  for (int loop = 0; loop < nb_beams; loop++){
+  for (int loop = 0; loop < nb_beams; loop++)
     cluster[loop]          = simple_clustering_.getClusterArr()[loop];
-    cluster_middle[loop]   = simple_clustering_.getClusterMiddle()[loop];
-    cluster_distance[loop] = simple_clustering_.getClusterDistance()[loop];
-  }
-  for (int c_id = 0; c_id < nb_clusters; c_id++)
-    cluster_dynamic[c_id]  = simple_clustering_.getClusterDynamic()[c_id];
 
+  for (int c_id = 0; c_id < nb_clusters; c_id++){
+    cluster_dynamic[c_id]  = simple_clustering_.getClusterDynamic()[c_id];
+    cluster_middle[c_id]   = simple_clustering_.getClusterMiddle()[c_id];
+    cluster_distance[c_id] = simple_clustering_.getClusterDistance()[c_id];
+  }
   // Visualize the Results
   visualizeClustering();
 }
@@ -179,7 +185,8 @@ void Detection::visualizeClustering(){
       nb_pts++;
 
       //textual display
-      ROS_INFO("cluster[%i] = (%f, %f): hit[%i](%f, %f) -> hit[%i](%f, %f), distance: %f, dynamic: %d", cluster_id,
+      ROS_INFO("cluster[%i] = (%f, %f): hit[%i](%f, %f) -> hit[%i](%f, %f), distance: %f, dynamic: %s", 
+                                                                            cluster_id,
                                                                             cluster_middle[cluster_id].x,
                                                                             cluster_middle[cluster_id].y,
                                                                             start,
@@ -189,7 +196,7 @@ void Detection::visualizeClustering(){
                                                                             current_scan[end].x,
                                                                             current_scan[end].y,
                                                                             cluster_distance[cluster_id],
-                                                                            cluster_dynamic[cluster_id]);
+                                                                            cluster_dynamic[cluster_id] ? "true" : "false");
 
       //graphical display of the middle of the current cluster
       display[nb_pts] = cluster_middle[cluster_id];
@@ -213,9 +220,10 @@ void Detection::visualizeClustering(){
       nb_pts++;
     }
   }
-  if (nb_pts>0)
-  ROS_INFO("nb_pts %i", nb_pts);
-  populateMarkerTopic(pub_detection_marker_, nb_pts, display, colors);
+    if (nb_pts>max_pts)
+      max_pts = nb_pts;
+  // ROS_INFO("nb_pts %i", nb_pts);
+  // populateMarkerTopic(pub_detection_marker_, nb_pts, display, colors);
 }
 
 }
