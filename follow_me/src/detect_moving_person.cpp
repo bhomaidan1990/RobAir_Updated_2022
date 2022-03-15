@@ -34,11 +34,10 @@
  ***********************************************************************************************************************
  */
 
-//used for detection of leg
-#define LEG_SIZE_MIN 0.05
-#define LEG_SIZE_MAX 0.25
+#define LEGS_DISTANCE_MIN 0.1
+#define LEGS_DISTANCE_MAX 0.7
 
-#include <follow_me/detect_legs.h>
+#include <follow_me/detect_moving_person.h>
 #include "ros/ros.h"
 
 namespace robair{
@@ -49,35 +48,54 @@ namespace robair{
 /***********************************************************
  * Primary methods
  */
-bool DetectLegs::init(int &num_clusters,  float (&cluster_distance)[1000], 
-              geometry_msgs::Point (&cluster_middle)[1000], bool (&cluster_dynamic)[1000]){
-    // Initialization
-    nb_clusters = num_clusters;
-    std::copy(std::begin(cluster_distance), std::end(cluster_distance), std::begin(cluster_distance_));
-    std::copy(std::begin(cluster_middle), std::end(cluster_middle), std::begin(cluster_middle_));
-    std::copy(std::begin(cluster_dynamic), std::end(cluster_dynamic), std::begin(cluster_dynamic_));
 
+bool DetectMovinPerson::init(){
+    
     return true;
 }
 
-void DetectLegs::detectLegs(){
+void DetectMovinPerson::detectPerson(){
+// a person has two legs located at less than "legs_distance_max" one from the other
+// a moving person (ie, person_dynamic array) has 2 legs that are dynamic
 
-    nb_legs_detected = 0;
+    ROS_INFO("detecting persons");
+    
+    nb_persons_detected = 0;
 
-    ROS_INFO("detecting legs");
+    for (int loop_leg1=0; loop_leg1<nb_legs_detected; loop_leg1++){//loop over all the legs
+        for (int loop_leg2=loop_leg1+1; loop_leg2<nb_legs_detected; loop_leg2++){//loop over all the legs
+            // if the distance between two legs is lower than "legs_distance_max"
+            // then we find a person
 
-    for (int c_id = 0; c_id < nb_clusters; c_id++){
-        
-        if(cluster_distance_[c_id]>LEG_SIZE_MIN && cluster_distance_[c_id]<LEG_SIZE_MAX){
-            // Leg Detected
-            nb_legs_detected++;
-            // Store the Middle Point
-            leg_detected[c_id] = cluster_middle_[c_id];
-            // Store Dynamic status
-            leg_dynamic[c_id] = cluster_dynamic_[c_id];
+            // we update the person_detected table to store the middle of the person
+            // we update the person_dynamic table to know if the person is moving or not
+
+            nb_persons_detected++;
         }
     }
-    ROS_INFO("detecting legs done");
-    ROS_INFO("There are [%i] legs here!", nb_legs_detected);
+
+    if ( nb_persons_detected ) {
+        ROS_INFO("%d persons have been detected.\n", nb_persons_detected);
+    }
 }
+
+void DetectMovinPerson::movingPerson(){
+   for (int loop=0; loop<nb_persons_detected; loop++)
+        if ( person_dynamic[loop] )
+        {
+
+            //we update moving_person_tracked and publish it
+            moving_person_detected = ...
+            // pub_detection_node.publish(moving_person_detected);
+
+        }
+    ROS_INFO("detecting a moving person done");
+}
+
+
+float DetectMovinPerson::distancePoints(geometry_msgs::Point &pa, geometry_msgs::Point &pb) {
+
+    return sqrt(pow((pa.x-pb.x),2.0) + pow((pa.y-pb.y),2.0));
+}
+
 }

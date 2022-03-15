@@ -127,4 +127,5 @@ float SimpleClustering::distancePoints(geometry_msgs::Point &pa, geometry_msgs::
 
     return sqrt(pow((pa.x-pb.x),2.0) + pow((pa.y-pb.y),2.0));
 }
+
 }

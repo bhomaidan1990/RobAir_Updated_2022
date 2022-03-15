@@ -33,112 +33,55 @@
  *
  ***********************************************************************************************************************
  */
-#pragma once
+ 
+ #pragma once
 
-#ifndef ROBAIR_DETECT_LEGS_H
-#define ROBAIR_DETECT_LEGS_H
-
-#include "geometry_msgs/Point.h"
+#ifndef ROBAIR_DETECT_MOVING_PERSON_H
+#define ROBAIR_DETECT_MOVING_PERSON_H
 
 namespace robair{
 
-class DetectLegs{
+class DetectMovinPerson{
 
 public:
     /**
      * \brief Default Class Constructor.
      */
-    DetectLegs(){}
+    DetectMovinPerson(){}
 
     /**
      * \brief Initialization.
      */
-    bool init(int &num_clusters, float (&cluster_distance)[1000], 
-              geometry_msgs::Point (&cluster_middle)[1000], bool (&cluster_dynamic)[1000]);
+    bool init();
 
     /**
-     * \brief Initialization.
+     * \brief Detect Person.
      */
-    void detectLegs();
-    //------------------------------------
-    // Getter Functions 
-    //------------------------------------
-        // Num of Clusters Getter
-    int getNumLegs(){
-        return nb_legs_detected;
-    }
+    void detectPerson();
+
+    /**
+     * \brief Detect Moving Person.
+     */
+    void movingPerson();
     
     /**
-     * \brief To Get the Cluster
-    * \return Static int Array leg_cluster
-    */  
-    int *getLegCluster(){
-        return leg_cluster;
-    }
-
-   /**
-     * \brief To Get the Middle Point of a Leg Cluster.
-    * \return Static geometry_msgs::Point Array leg_detected
-    */ 
-    geometry_msgs::Point *getLegMiddle(){
-        return leg_detected;
-    }
-
-    /**
-     * \brief To Get the Cluster
-    * \return Static bool Array leg_dynamic
-    */  
-    bool *getLegDynamic(){
-        return leg_dynamic;
-    }
+     * \brief Eucledian Distance Between Two Points.
+     *
+     * \return float Eucledian Distance in Meters.
+     */
+    float distancePoints(geometry_msgs::Point &pa, geometry_msgs::Point &pb);
 
 private:
+    /**
+     * \brief Num of Detected Persons.
+     */
+    int nb_persons_detected;
+
     /**
      * \brief Num of Detected Legs.
      */
     int nb_legs_detected;
-
-    /**
-     * \brief Detected Legs Mid Points.
-     */
-    geometry_msgs::Point leg_detected[1000];
-
-    /**
-     * \brief Leg Cluster.
-     */
-    int leg_cluster[1000];
-
-    /**
-     * \brief Dynamic Leg (Moving).
-     */
-    bool leg_dynamic[1000];
-
-    /**
-     * \brief Num of Clusters.
-     */  
-    int nb_clusters;
-
-    /**
-     * \brief Laser Scans Cluster ID.
-     */      
-    int cluster_[1000];
-
-    /**
-     * \brief Cluster Sizes.
-     */      
-    float cluster_distance_[1000];
-
-    /**
-     * \brief Middle of Each Cluster.
-     */      
-    geometry_msgs::Point cluster_middle_[1000];
-
-    /**
-     * \brief Dynamic Clusters.
-     */      
-    bool cluster_dynamic_[1000];
 };
-
 }
 
 #endif

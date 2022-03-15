@@ -89,7 +89,7 @@ void SimpleMotionDetection::detectMotion(){
 
     // if the difference between ( the background and the current range ) is higher than "DETECTION_THRESHOLD"
     // then
-    if( (background[loop]-r[loop]) > DETECTION_THRESHOLD)
+    if( std::fabs(background[loop]-r[loop]) > DETECTION_THRESHOLD)
       dynamic[loop] = true;//the current hit is dynamic
     else
       dynamic[loop] = false;//else its static   
