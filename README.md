@@ -40,4 +40,4 @@ roslaunch follow_me robair_lab2.launch
 
 ## Known Bugs:
 
-Dynamic cluster is not detected well in `follow_me`
+There is delay in parsing the markers!

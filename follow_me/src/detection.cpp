@@ -89,7 +89,7 @@ void Detection::update()
   detectMotion();
   simpleClustering();
   detectLegs();
-  // Visualization
+  /* Visualization */
   if(max_pts>0)
     populateMarkerTopic(pub_detection_marker_, max_pts, display, colors);
 }
@@ -107,8 +107,9 @@ void Detection::detectMotion(){
     // Read Motion Detection Results
     for (int loop = 0; loop < nb_beams; loop++)
       dynamic[loop] = motion_detector_.getDynamicrArr()[loop];
+    
     // Visualize the Results
-    visualizeMotion();
+    // visualizeMotion();
     }
   else if (!init_robot)
     ROS_WARN("waiting for robot_moving_node");
@@ -119,15 +120,18 @@ void Detection::visualizeMotion(){
     int nb_pts = 0;
     for (int loop = 0; loop < nb_beams; loop++){
       if(dynamic[loop]){
-      // Display Dynamic Hits
-      display[nb_pts] = current_scan[loop];
-      // Blue Color
-      colors[nb_pts].r = 0;
-      colors[nb_pts].g = 0;
-      colors[nb_pts].b = 1;
-      colors[nb_pts].a = 1.0;
+        
+        ROS_INFO("Hit [%i] is dynamic.",loop);
 
-      nb_pts++;
+        // Display Dynamic Hits
+        display[nb_pts] = current_scan[loop];
+        // Blue Color
+        colors[nb_pts].r = 0;
+        colors[nb_pts].g = 0;
+        colors[nb_pts].b = 1;
+        colors[nb_pts].a = 1.0;
+
+        nb_pts++;
       }
     }
     if (nb_pts>max_pts)
@@ -139,7 +143,6 @@ void Detection::visualizeMotion(){
 void Detection::simpleClustering(){
   // Perform Clustering
   simple_clustering_.init(nb_beams, current_scan, dynamic);
-  ROS_INFO("performing clustering");
   simple_clustering_.performClustering();
   // Read Clustering Results
   nb_clusters = simple_clustering_.getNumClusters();
@@ -152,7 +155,7 @@ void Detection::simpleClustering(){
     cluster_distance[c_id] = simple_clustering_.getClusterDistance()[c_id];
   }
   // Visualize the Results
-  visualizeClustering();
+  // visualizeClustering();
 }
 
 void Detection::visualizeClustering(){
@@ -174,7 +177,7 @@ void Detection::visualizeClustering(){
   {
     //if (two consequtive points don't belong to the same cluster){
       //the current hit doesnt belong to the same cluster
-    if(cluster[loop-1]!=cluster[loop]){
+    if(cluster[loop]!=cluster[loop-1]){
       end = loop - 1;
       // graphical display of the end of the current cluster
       display[nb_pts] = current_scan[end];
@@ -197,7 +200,7 @@ void Detection::visualizeClustering(){
                                                                             current_scan[end].x,
                                                                             current_scan[end].y,
                                                                             cluster_distance[cluster_id],
-                                                                            cluster_dynamic[cluster_id] ? "true" : "false");
+                                                                            cluster_dynamic[cluster_id] ? "true" : "false");   
 
       //graphical display of the middle of the current cluster
       display[nb_pts] = cluster_middle[cluster_id];
@@ -221,8 +224,8 @@ void Detection::visualizeClustering(){
       nb_pts++;
     }
   }
-    if (nb_pts>max_pts)
-      max_pts = nb_pts;
+  if (nb_pts>max_pts)
+    max_pts = nb_pts;
   // ROS_INFO("nb_pts %i", nb_pts);
   // populateMarkerTopic(pub_detection_marker_, nb_pts, display, colors);
 }
@@ -299,6 +302,8 @@ void Detection::visualizeLegs(){
   if (nb_legs_detected )
     ROS_INFO("%d legs have been detected.\n", nb_legs_detected);
 
+  if (nb_pts>max_pts)
+    max_pts = nb_pts;
 }
 
 }
