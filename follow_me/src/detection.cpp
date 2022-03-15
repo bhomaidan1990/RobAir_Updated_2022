@@ -135,13 +135,15 @@ void Detection::simpleClustering(){
   ROS_INFO("performing clustering");
   simple_clustering_.performClustering();
   // Read Clustering Results
-  nb_cluster = simple_clustering_.getNumClusters();
+  nb_clusters = simple_clustering_.getNumClusters();
   for (int loop = 0; loop < nb_beams; loop++){
     cluster[loop]          = simple_clustering_.getClusterArr()[loop];
     cluster_middle[loop]   = simple_clustering_.getClusterMiddle()[loop];
     cluster_distance[loop] = simple_clustering_.getClusterDistance()[loop];
-    cluster_dynamic[loop]  = simple_clustering_.getClusterDynamic()[loop];
   }
+  for (int c_id = 0; c_id < nb_clusters; c_id++)
+    cluster_dynamic[c_id]  = simple_clustering_.getClusterDynamic()[c_id];
+
   // Visualize the Results
   visualizeClustering();
 }

@@ -117,7 +117,7 @@ private:
     /**
      * \brief Num of Clusters.
      */  
-    int nb_cluster;
+    int nb_clusters;
 
     /**
      * \brief Laser Scans Cluster ID.

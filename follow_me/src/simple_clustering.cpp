@@ -57,7 +57,7 @@ SimpleClustering::SimpleClustering(){
 
 bool SimpleClustering::init(int &num_beams, geometry_msgs::Point (&current_scan)[1000], bool (&dynamic)[1000]){
     // To Do Some Checks and Initializations.
-    nb_cluster = 0;
+    nb_clusters = 0;
     nb_beams = num_beams;
     std::copy(std::begin(current_scan), std::end(current_scan), std::begin(scan_pts));
     std::copy(std::begin(dynamic), std::end(dynamic), std::begin(dynamic_));
@@ -78,7 +78,7 @@ void SimpleClustering::performClustering(){
         if(distancePoints(scan_pts[loop], scan_pts[loop-1]) > CLUSTER_THRESHOLD)
         {
         //the current hit doesnt belong to the same hit
-        cluster[loop-1] = nb_cluster;
+        cluster[loop-1] = nb_clusters;
         
         dynamic_pts_percentage = 100 * dynamic_pts_percentage / (end - start);
 
@@ -87,26 +87,26 @@ void SimpleClustering::performClustering(){
         end = loop-1;
 
         // - cluster_distance to store the size of the cluster ie, the euclidian distance between the first hit of the cluster and the last one
-        cluster_distance[nb_cluster] = distancePoints(scan_pts[start], scan_pts[end]);
+        cluster_distance[nb_clusters] = distancePoints(scan_pts[start], scan_pts[end]);
 
         // - cluster_middle to store the middle of the cluster
-        cluster_middle[nb_cluster] = scan_pts[(start + end)/2];
+        cluster_middle[nb_clusters] = scan_pts[(start + end)/2];
         
         // - cluster_dynamic to store cluster status dynamic/static
         if(dynamic_pts_percentage>DYNAMIC_THRESHOLD)
-            cluster_dynamic[nb_cluster] = true; // dynamic
+            cluster_dynamic[nb_clusters] = true; // dynamic
         else
-            cluster_dynamic[nb_cluster] = false; // static
+            cluster_dynamic[nb_clusters] = false; // static
         
         // reset for next cluster
         dynamic_pts_percentage = 0; 
         // 2/ we start a new cluster with the current hit
-        nb_cluster++;
+        nb_clusters++;
         start = loop;
         }
         else
         {
-            cluster[loop] = nb_cluster;
+            cluster[loop] = nb_clusters;
             if (dynamic_[loop])
                 dynamic_pts_percentage++;
         }

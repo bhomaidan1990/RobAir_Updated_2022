@@ -73,7 +73,7 @@ public:
     //------------------------------------
     // Num of Clusters Getter
     int getNumClusters(){
-        return nb_cluster;
+        return nb_clusters;
     }
 
    /**
@@ -123,7 +123,7 @@ private:
     /**
      * \brief Num of Clusters.
      */  
-    int nb_cluster;
+    int nb_clusters;
 
     /**
      * \brief Laser Scans Cluster ID.
