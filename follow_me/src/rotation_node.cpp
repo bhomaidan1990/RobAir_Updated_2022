@@ -33,15 +33,16 @@
  *
  ***********************************************************************************************************************
  */
-#include <follow_me/detection.h>
+
+#include <follow_me/rotation.h>
 
 int main(int argc, char **argv){
 
-    ros::init(argc, argv, "detection_node");
+    ros::init(argc, argv, "rotation_node");
 
-    ROS_INFO("waiting for activation of detection");
+    ROS_INFO("(rotation_node) waiting for a /goal_to_reach");
     ros::NodeHandle nh("follow_me");
-    robair::Detection basic_object(nh);
+    robair::Rotation basic_object(nh);
 
     ros::spin();
 

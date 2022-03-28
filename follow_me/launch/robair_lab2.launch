@@ -12,14 +12,18 @@
   <arg name="file_5" default="2017-09-07-17-18-40" />
   <arg name="file_6" default="2018-01-24-17-44-23" />
   
-  <node pkg="rosbag" type="play" name="player"  args="--clock $(arg bags_path)$(arg file_3).bag"/> <!-- output="screen" -->
+  <!-- output="screen" -->
+  <node pkg="rosbag" type="play" name="player"  args="--clock $(arg bags_path)$(arg file_1).bag"/> 
   <!-- tutorial_ros -->
   <group> 
     <node type="robot_moving" name="robot_moving" pkg="tutorial_ros"/>
   </group>
   <!-- follow_me -->
   <group>
-    <node type="detection" name="detection" output="screen" pkg="follow_me"/> <!-- output="screen" -->
+    <node type="detection" name="detection" output="screen" pkg="follow_me"/> 
+    <node type="datmo" name="datmo" output="screen" pkg="follow_me"/>
+    <node type="rotation" name="rotation" output="screen" pkg="follow_me"/>
+
   </group>
 
   <!-- RViz -->

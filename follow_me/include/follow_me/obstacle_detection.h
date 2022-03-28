@@ -36,21 +36,20 @@
 
 #pragma once
 
-#ifndef ROBAIR_ROBOT_DETECTION_H
-#define ROBAIR_ROBOT_DETECTION_H
+#ifndef ROBAIR_ROBOT_OBSTACLE_DETECTION_H
+#define ROBAIR_ROBOT_OBSTACLE_DETECTION_H
 
 #include "ros/ros.h"
 #include "geometry_msgs/Point.h"
 
-namespace robair
-{
+namespace robair{
 
-class Detection{
+class ObstacleDetection {
 public:
     /**
      * \brief Default Class Constructor.
      */
-    Detection(ros::NodeHandle& nh);
+    ObstacleDetection(ros::NodeHandle& nh);
 
     /**
      * \brief Initialization.
@@ -62,41 +61,6 @@ public:
      */
     void update();
 
-    /**
-     * \brief TODO.
-     */
-    void storeBackground();
-    
-    /**
-     * \brief TODO.
-     */
-    void resetMotion();
-
-    /**
-     * \brief TODO.
-     */
-    void detectMotion();
-
-    /**
-     * \brief TODO.
-     */
-    void performClustering();
-
-    /**
-     * \brief TODO.
-     */
-    void detectLegs();
-
-    /**
-     * \brief TODO.
-     */
-    void detectPersons();
-
-    /**
-     * \brief TODO.
-     */
-    void detectMovingPerson();
-
 private:
     /**
      * \brief Node Handler.
@@ -106,102 +70,27 @@ private:
     /**
      * \brief TODO.
      */
-    ros::Publisher pub_detection_node;
+    // communication with action
+    ros::Publisher pub_closest_obstacle;
     /**
      * \brief TODO.
      */
-    ros::Publisher pub_detection_marker;
+    ros::Publisher pub_closest_obstacle_marker;
 
     /**
      * \brief TODO.
      */
-    //to perform detection of motion
-    bool init_robot;
-    
-    /**
-     * \brief TODO.
-     */
-    bool stored_background;
-    
-    /**
-     * \brief TODO.
-     */
-    float background[1000];
-    
-    /**
-     * \brief TODO.
-     */
-    bool dynamic[1000];
+    geometry_msgs::Point transform_laser;
 
     /**
      * \brief TODO.
      */
-    //to perform clustering
-    int nb_cluster;// number of cluster
+    geometry_msgs::Point previous_closest_obstacle;
     
     /**
      * \brief TODO.
      */
-    int cluster[1000]; //to store for each hit, the cluster it belongs to
-    
-    /**
-     * \brief TODO.
-     */
-    float cluster_size[1000];// to store the size of each cluster
-    
-    /**
-     * \brief TODO.
-     */
-    geometry_msgs::Point cluster_middle[1000];// to store the middle of each cluster
-    
-    /**
-     * \brief TODO.
-     */
-    int cluster_dynamic[1000];// to store the percentage of the cluster that is dynamic
-
-    /**
-     * \brief TODO.
-     */
-    //to perform detection of legs and to store them
-    int nb_legs_detected;
-    
-    /**
-     * \brief TODO.
-     */
-    geometry_msgs::Point leg_detected[1000];
-    
-    /**
-     * \brief TODO.
-     */
-    int leg_cluster[1000];//to store the cluster corresponding to a leg
-    
-    /**
-     * \brief TODO.
-     */
-    bool leg_dynamic[1000];//to know if a leg is dynamic or not
-
-    /**
-     * \brief TODO.
-     */
-    //to perform detection of a moving person and store it
-    int nb_persons_detected;
-    
-    /**
-     * \brief TODO.
-     */
-    geometry_msgs::Point person_detected[1000];
-    
-    /**
-     * \brief TODO.
-     */
-    bool person_dynamic[1000];
-    
-    /**
-     * \brief TODO.
-     */
-    geometry_msgs::Point moving_person_detected;//to store the coordinates of the moving person that we have detected
-
+    geometry_msgs::Point closest_obstacle;
 };
 }
-
 #endif

@@ -33,15 +33,15 @@
  *
  ***********************************************************************************************************************
  */
-#include <follow_me/detection.h>
+#include <follow_me/datmo.h>
 
 int main(int argc, char **argv){
 
-    ros::init(argc, argv, "detection_node");
+    ros::init(argc, argv, "datmo");
 
-    ROS_INFO("waiting for activation of detection");
+    ROS_INFO("waiting for activation of datmo");
     ros::NodeHandle nh("follow_me");
-    robair::Detection basic_object(nh);
+    robair::DATMO basic_object(nh);
 
     ros::spin();
 

@@ -36,21 +36,20 @@
 
 #pragma once
 
-#ifndef ROBAIR_ROBOT_DETECTION_H
-#define ROBAIR_ROBOT_DETECTION_H
+#ifndef ROBAIR_ROBOT_ACTION_H
+#define ROBAIR_ROBOT_ACTION_H
 
 #include "ros/ros.h"
 #include "geometry_msgs/Point.h"
 
-namespace robair
-{
+namespace robair{
 
-class Detection{
+class Action{
 public:
     /**
      * \brief Default Class Constructor.
      */
-    Detection(ros::NodeHandle& nh);
+    Action(ros::NodeHandle& nh);
 
     /**
      * \brief Initialization.
@@ -65,37 +64,44 @@ public:
     /**
      * \brief TODO.
      */
-    void storeBackground();
-    
-    /**
-     * \brief TODO.
-     */
-    void resetMotion();
+    void initAction();
 
     /**
      * \brief TODO.
      */
-    void detectMotion();
+    void computeRotation();
 
     /**
      * \brief TODO.
      */
-    void performClustering();
+    void computeTranslation();
 
     /**
      * \brief TODO.
      */
-    void detectLegs();
+    void combineRotationTranslation();
 
     /**
      * \brief TODO.
      */
-    void detectPersons();
+    void moveRobot();
+
+    /**
+     * \brief https://stackoverflow.com/questions/9323903/most-efficient-elegant-way-to-clip-a-number.
+     */
+    float clip(float n, float lower, float upper) {
+        return std::max(lower, std::min(n, upper));
+    }
 
     /**
      * \brief TODO.
      */
-    void detectMovingPerson();
+    void goalToReachCallback(const geometry_msgs::Point::ConstPtr &g);
+
+    /**
+     * \brief TODO.
+     */
+    void closestObstacleCallback(const geometry_msgs::Point::ConstPtr &obs);
 
 private:
     /**
@@ -104,104 +110,135 @@ private:
     ros::NodeHandle nh_;
 
     /**
-     * \brief TODO.
+     * \brief Communication with one_moving_person_detector or person_tracker.
      */
-    ros::Publisher pub_detection_node;
+    ros::Subscriber sub_goal_to_reach;
+
     /**
-     * \brief TODO.
+     * \brief Communication with obstacle_detection.
      */
-    ros::Publisher pub_detection_marker;
+    ros::Subscriber sub_obstacle_detection;
+
+    /**
+     * \brief Command Velocity.
+     */
+    ros::Publisher pub_cmd_vel;
 
     /**
      * \brief TODO.
      */
-    //to perform detection of motion
-    bool init_robot;
-    
+    geometry_msgs::Point goal_to_reach;
+
     /**
-     * \brief TODO.
+     * \brief New /goal_to_reach Flag.
      */
-    bool stored_background;
-    
+    bool new_goal_to_reach;
+
     /**
-     * \brief TODO.
+     * \brief Goal Reached Flag.
      */
-    float background[1000];
-    
-    /**
-     * \brief TODO.
-     */
-    bool dynamic[1000];
+    bool cond_goal;
 
     /**
      * \brief TODO.
      */
-    //to perform clustering
-    int nb_cluster;// number of cluster
+    //pid for rotation
+    float rotation_to_do;
     
     /**
      * \brief TODO.
+     */    
+    float rotation_done;
+
+    /**
+     * \brief Error in Rotation.
      */
-    int cluster[1000]; //to store for each hit, the cluster it belongs to
+    float error_rotation;
+
+    /**
+     * \brief Rotation Reached Flag.
+     */
+    bool cond_rotation;
+
+    /**
+     * \brief Initial Rotation(before starting the pid for rotation control).
+     */
+    float initial_orientation;
     
     /**
-     * \brief TODO.
+     * \brief Current Orientation(provided by the odometer).
      */
-    float cluster_size[1000];// to store the size of each cluster
-    
-    /**
-     * \brief TODO.
-     */
-    geometry_msgs::Point cluster_middle[1000];// to store the middle of each cluster
-    
-    /**
-     * \brief TODO.
-     */
-    int cluster_dynamic[1000];// to store the percentage of the cluster that is dynamic
+    float current_orientation;
 
     /**
      * \brief TODO.
      */
-    //to perform detection of legs and to store them
-    int nb_legs_detected;
+    float error_integral_rotation;
     
     /**
      * \brief TODO.
      */
-    geometry_msgs::Point leg_detected[1000];
+    float error_previous_rotation;
     
     /**
      * \brief TODO.
      */
-    int leg_cluster[1000];//to store the cluster corresponding to a leg
-    
-    /**
-     * \brief TODO.
-     */
-    bool leg_dynamic[1000];//to know if a leg is dynamic or not
+    float rotation_speed;
 
     /**
      * \brief TODO.
      */
-    //to perform detection of a moving person and store it
-    int nb_persons_detected;
-    
-    /**
-     * \brief TODO.
-     */
-    geometry_msgs::Point person_detected[1000];
-    
-    /**
-     * \brief TODO.
-     */
-    bool person_dynamic[1000];
-    
-    /**
-     * \brief TODO.
-     */
-    geometry_msgs::Point moving_person_detected;//to store the coordinates of the moving person that we have detected
+    float translation_to_do;
 
+    /**
+     * \brief TODO.
+     */
+    float translation_done;
+    
+    /**
+     * \brief Error in Translation.
+     */
+    float error_translation;
+    
+    /**
+     * \brief Translation Reached Flag.
+     */
+    bool cond_translation;
+    
+    /**
+     * \brief Initial Position(before starting the pid for Position control)..
+     */
+    geometry_msgs::Point initial_position;
+    
+    /**
+     * \brief Current Position(provided by the odometer)..
+     */
+    geometry_msgs::Point current_position;
+
+    /**
+     * \brief TODO.
+     */    
+    float error_integral_translation;
+
+    /**
+     * \brief TODO.
+     */    
+    float error_previous_translation;
+
+    /**
+     * \brief TODO.
+     */    
+    float translation_speed;
+
+    /**
+     * \brief TODO.
+     */
+    bool init_obstacle;
+
+    /**
+     * \brief TODO.
+     */    
+    geometry_msgs::Point closest_obstacle;  
 };
 }
-
 #endif

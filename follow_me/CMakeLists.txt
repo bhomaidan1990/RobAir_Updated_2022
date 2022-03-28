@@ -60,9 +60,9 @@ catkin_package(
     nav_msgs
     genmsg
     tf
+  DEPENDS
+    # External Libraries
     tutorial_ros
-  # DEPENDS
-    ## External Libraries
 )
 
 #===========================================================
@@ -76,31 +76,15 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-# #------------------------------------
-# #  robot_moving
-# #------------------------------------
-# set(target_name robot_moving)
-
-# ## Declare a C++ executable
-# add_executable(${target_name}
-#   src/${target_name}_node.cpp
-#   src/${target_name}.cpp
-# )
-
-# ## Specify libraries to link a library or executable target against
-# target_link_libraries(${target_name}
-#   ${catkin_LIBRARIES}
-# )
-
 #------------------------------------
-#  detect_motion
+#  rotation
 #------------------------------------
-set(target_name detection)
+set(target_name rotation)
 
 ## Declare a C++ executable
 add_executable(${target_name}
   src/${target_name}_node.cpp
-  # src/${target_name}.cpp
+  src/${target_name}.cpp
 )
 
 ## Specify libraries to link a library or executable target against
@@ -108,21 +92,69 @@ target_link_libraries(${target_name}
   ${catkin_LIBRARIES}
 )
 
-# #------------------------------------
-# #  rotation_done
-# #------------------------------------
-# set(target_name rotation_done)
+#------------------------------------
+#  action
+#------------------------------------
+set(target_name action)
 
-# ## Declare a C++ executable
-# add_executable(${target_name}
-#   src/${target_name}_node.cpp
-#   src/${target_name}.cpp
-# )
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
+)
 
-# ## Specify libraries to link a library or executable target against
-# target_link_libraries(${target_name}
-#   ${catkin_LIBRARIES}
-# )
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
+  ${catkin_LIBRARIES}
+)
+
+#------------------------------------
+#  obstacle_detection
+#------------------------------------
+set(target_name obstacle_detection)
+
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
+)
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
+  ${catkin_LIBRARIES}
+)
+
+#------------------------------------
+#  detection
+#------------------------------------
+set(target_name detection)
+
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
+)
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
+  ${catkin_LIBRARIES}
+)
+
+#------------------------------------
+#  datmo
+#------------------------------------
+set(target_name datmo)
+
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
+)
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
+  ${catkin_LIBRARIES}
+)
 
 #===========================================================
 # Install

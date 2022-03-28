@@ -36,8 +36,8 @@
 
 #pragma once
 
-#ifndef ROBAIR_ROBOT_DETECTION_H
-#define ROBAIR_ROBOT_DETECTION_H
+#ifndef ROBAIR_ROBOT_DATMO_H
+#define ROBAIR_ROBOT_DATMO_H
 
 #include "ros/ros.h"
 #include "geometry_msgs/Point.h"
@@ -45,12 +45,12 @@
 namespace robair
 {
 
-class Detection{
+class DATMO{
 public:
     /**
      * \brief Default Class Constructor.
      */
-    Detection(ros::NodeHandle& nh);
+    DATMO(ros::NodeHandle& nh);
 
     /**
      * \brief Initialization.
@@ -97,41 +97,42 @@ public:
      */
     void detectMovingPerson();
 
+    /**
+     * \brief TODO.
+     */
+    void trackMovingPerson();
+
 private:
     /**
      * \brief Node Handler.
      */
     ros::NodeHandle nh_;
+    
+    /**
+     * \brief TODO.
+     */
+    ros::Publisher pub_datmo;
 
     /**
      * \brief TODO.
      */
-    ros::Publisher pub_detection_node;
-    /**
-     * \brief TODO.
-     */
-    ros::Publisher pub_detection_marker;
+    ros::Publisher pub_datmo_marker;
 
     /**
      * \brief TODO.
      */
     //to perform detection of motion
-    bool init_robot;
-    
-    /**
-     * \brief TODO.
-     */
     bool stored_background;
     
     /**
      * \brief TODO.
      */
-    float background[1000];
+    float background[1000];// to store the range of each hit
     
     /**
      * \brief TODO.
      */
-    bool dynamic[1000];
+    bool dynamic[1000];//to know if the corresponding hit is dynamic or not
 
     /**
      * \brief TODO.
@@ -147,7 +148,7 @@ private:
     /**
      * \brief TODO.
      */
-    float cluster_size[1000];// to store the size of each cluster
+    float cluster_size[1000];//to store the size of each cluster
     
     /**
      * \brief TODO.
@@ -157,7 +158,12 @@ private:
     /**
      * \brief TODO.
      */
-    int cluster_dynamic[1000];// to store the percentage of the cluster that is dynamic
+    int cluster_dynamic[1000];//to store the percentage of the cluster that is dynamic
+    
+    /**
+     * \brief TODO.
+     */
+    int cluster_start[1000], cluster_end[1000];
 
     /**
      * \brief TODO.
@@ -168,7 +174,7 @@ private:
     /**
      * \brief TODO.
      */
-    geometry_msgs::Point leg_detected[1000];
+    geometry_msgs::Point leg_detected[1000];//to store the coordinates a leg
     
     /**
      * \brief TODO.
@@ -189,18 +195,38 @@ private:
     /**
      * \brief TODO.
      */
-    geometry_msgs::Point person_detected[1000];
+    geometry_msgs::Point person_detected[1000];//to store the coordinates of a person
     
     /**
      * \brief TODO.
      */
-    bool person_dynamic[1000];
+    bool person_dynamic[1000];//to know if a person is dynamic or not
     
     /**
      * \brief TODO.
      */
-    geometry_msgs::Point moving_person_detected;//to store the coordinates of the moving person that we have detected
+    geometry_msgs::Point moving_person_tracked;//to store the coordinates of the moving person that we are tracking
 
+    /**
+     * \brief TODO.
+     */
+    //to perform tracking of the moving person
+    bool tracking_mode;//to know if we are tracking a moving person or not
+    
+    /**
+     * \brief TODO.
+     */
+    float uncertainty;
+
+    /**
+     * \brief TODO.
+     */
+    int frequency;
+
+    /**
+     * \brief TODO.
+     */
+    int nb_pts;
 };
 }
 
