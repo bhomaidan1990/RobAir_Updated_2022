@@ -299,11 +299,11 @@ void populateMarkerReference(ros::Publisher &pub) {
  * \brief Marker Topic Publishing.
  */
 void populateMarkerTopic(ros::Publisher &pub, int &nb_pts,
-        geometry_msgs::Point *display, std_msgs::ColorRGBA *colors){
+        geometry_msgs::Point *display, std_msgs::ColorRGBA *colors, std::string frame_id="laser"){
 
     visualization_msgs::Marker marker;
 
-    marker.header.frame_id = "laser";
+    marker.header.frame_id = frame_id;
     marker.header.stamp = ros::Time::now();
     marker.ns = "laser_graphical_display";
     marker.id = 0;

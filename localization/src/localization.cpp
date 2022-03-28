@@ -37,7 +37,7 @@
 #define ANGLE_RESOLUTION 5//in degrees
 #define DISTANCE_TO_TRAVEL 1
 #define ANGLE_TO_TRAVEL 20
-#define  UNCERTAINTY  0.05
+#define UNCERTAINTY  0.05
 
 #include <tutorial_ros/utility.h>
 #include <localization/localization.h>
@@ -138,7 +138,7 @@ void Localization::initializeLocalization() {
 
     int score_max = sensorModel(initial_position.x, initial_position.y, initial_orientation);
     ROS_INFO("initial_position(%f, %f, %f): score = %i", initial_position.x, initial_position.y, initial_orientation*180/M_PI, score_max);
-    populateMarkerTopic(pub_localization_marker, nb_pts, display, colors);
+    populateMarkerTopic(pub_localization_marker, nb_pts, display, colors, "map");
     ROS_INFO("press enter to continue");
     getchar();
 
@@ -161,7 +161,7 @@ void Localization::initializeLocalization() {
                 { // robair can only be at a free cell
                     int score_current = sensorModel(loop_x, loop_y, o);
                     ROS_INFO("(%f, %f, %f): score = %i", loop_x, loop_y, o*180/M_PI, score_current);
-                    populateMarkerTopic(pub_localization_marker, nb_pts, display, colors);
+                    populateMarkerTopic(pub_localization_marker, nb_pts, display, colors, "map");
                     ROS_INFO("press enter to continue");
                     getchar();
                     //we store the maximum score over all the possible positions in estimated_position
@@ -204,7 +204,7 @@ void Localization::estimatePosition() {
     //initialization of score_max with the predicted_position
     int score_max = sensorModel(predicted_position.x, predicted_position.y, predicted_orientation);
     ROS_INFO("predicted position(%f, %f, %f): score = %i", predicted_position.x, predicted_position.y, predicted_orientation*180/M_PI, score_max);
-    populateMarkerTopic(pub_localization_marker, nb_pts, display, colors);
+    populateMarkerTopic(pub_localization_marker, nb_pts, display, colors, "map");
     ROS_INFO("press enter to continue");
     getchar();
 
@@ -225,7 +225,7 @@ void Localization::estimatePosition() {
                 { // robair can only be at a free cell
                     int score_current = sensorModel(loop_x, loop_y, o);
                     ROS_INFO("(%f, %f, %f): score = %i", loop_x, loop_y, o*180/M_PI, score_current);
-                    populateMarkerTopic(pub_localization_marker, nb_pts, display, colors);
+                    populateMarkerTopic(pub_localization_marker, nb_pts, display, colors, "map");
                     ROS_INFO("press enter to continue");
                     getchar();
                     //we store the maximum score over all the possible positions in estimated_position
