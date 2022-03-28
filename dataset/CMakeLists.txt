@@ -51,7 +51,7 @@ catkin_package(
 #===========================================================
 
 install(
-  DIRECTORY dataset
+  DIRECTORY robair_bags robair_maps
   DESTINATION "${CATKIN_PACKAGE_SHARE_DESTINATION}"
 )
 
