@@ -242,11 +242,11 @@ void odomCallback(const nav_msgs::Odometry::ConstPtr& o) {
 /**
  * \brief Marker References Publishing.
  */
-void populateMarkerReference(ros::Publisher &pub) {
+void populateMarkerReference(ros::Publisher &pub, std::string frame_id="laser") {
 
     visualization_msgs::Marker references;
 
-    references.header.frame_id = "laser";
+    references.header.frame_id = frame_id;
     references.header.stamp = ros::Time::now();
     references.ns = "laser_graphical_display";
     references.id = 1;
@@ -338,7 +338,7 @@ void populateMarkerTopic(ros::Publisher &pub, int &nb_pts,
         }
 
     pub.publish(marker);
-    populateMarkerReference(pub);
+    populateMarkerReference(pub, frame_id);
 }
 
 /**------------------------
