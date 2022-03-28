@@ -20,9 +20,11 @@
   </group>
   <!-- follow_me -->
   <group>
-    <node type="detection" name="detection" output="screen" pkg="follow_me"/> 
+    <!-- <node type="detection" name="detection" output="screen" pkg="follow_me"/>  -->
     <node type="datmo" name="datmo" output="screen" pkg="follow_me"/>
-    <node type="rotation" name="rotation" output="screen" pkg="follow_me"/>
+    <!-- <node type="rotation" name="rotation" output="screen" pkg="follow_me"/> -->
+    <node type="action" name="action" output="screen" pkg="follow_me"/>
+    <node type="obstacle_detection" name="obstacle_detection" output="screen" pkg="follow_me"/>
 
   </group>
 
