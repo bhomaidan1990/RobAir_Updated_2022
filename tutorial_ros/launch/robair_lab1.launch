@@ -3,7 +3,7 @@
 
   <!-- <arg name="namespace" default="tutorial_ros" /> -->
 
-  <arg name="bags_path" default="$(find dataset)/robair_dataset/" />
+  <arg name="bags_path" default="$(find dataset)/robair_bags/" />
 
   <arg name="file_1" default="2017-09-07-16-55-12" />
   <arg name="file_2" default="2017-09-07-16-57-44" />

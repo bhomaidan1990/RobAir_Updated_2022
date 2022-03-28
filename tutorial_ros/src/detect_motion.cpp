@@ -145,7 +145,7 @@ void DetectMotion::motionDetection() {
       /*== TODO: Fill here ==*/
         // if the difference between ( the background and the current value r ) is higher than "detection_threshold"
         // then
-        if( std::fabs(background[loop]-r[loop]) > DETECTION_THRESHOLD)
+        if( (background[loop]-r[loop]) > DETECTION_THRESHOLD)
             dynamic[loop] = true;//the current hit is dynamic
         else
             dynamic[loop] = false;//else its static

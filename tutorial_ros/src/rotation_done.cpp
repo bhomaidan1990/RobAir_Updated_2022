@@ -90,7 +90,7 @@ void RotationDone::update() {
         first = false;
 
         rotation_done = orientation - initial_orientation;
-
+        
         //do not forget that rotation_done must always be between -M_PI and +M_PI
         if ( rotation_done > M_PI )
         {

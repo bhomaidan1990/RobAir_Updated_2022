@@ -49,8 +49,10 @@
 //
 #include "sensor_msgs/LaserScan.h"
 #include "geometry_msgs/Point.h"
+#include "std_msgs/Int32.h"
 #include "std_msgs/Float32.h"
 #include "std_msgs/Bool.h"
+#include "std_msgs/String.h"
 //
 #include "std_msgs/ColorRGBA.h"
 #include "visualization_msgs/Marker.h"
@@ -117,12 +119,12 @@ namespace robair
     /**
      * \brief Laser Points to Display.
      */
-    geometry_msgs::Point display[1000];
+    geometry_msgs::Point display[2000];
 
     /**
      * \brief Color Messages.
      */
-    std_msgs::ColorRGBA colors[1000];
+    std_msgs::ColorRGBA colors[2000];
 
     /**------------------------
      *  Motion Related

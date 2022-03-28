@@ -60,9 +60,9 @@ catkin_package(
     nav_msgs
     genmsg
     tf
+  DEPENDS
+    # External Libraries
     tutorial_ros
-  # DEPENDS
-    ## External Libraries
 )
 
 #===========================================================
@@ -76,53 +76,37 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-# #------------------------------------
-# #  robot_moving
-# #------------------------------------
-# set(target_name robot_moving)
+#------------------------------------
+#  localization
+#------------------------------------
+set(target_name localization)
 
-# ## Declare a C++ executable
-# add_executable(${target_name}
-#   src/${target_name}_node.cpp
-#   src/${target_name}.cpp
-# )
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
+)
 
-# ## Specify libraries to link a library or executable target against
-# target_link_libraries(${target_name}
-#   ${catkin_LIBRARIES}
-# )
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
+  ${catkin_LIBRARIES}
+)
 
-# #------------------------------------
-# #  detect_motion
-# #------------------------------------
-# set(target_name detection)
+#------------------------------------
+#  sensor_model
+#------------------------------------
+set(target_name sensor_model)
 
-# ## Declare a C++ executable
-# add_executable(${target_name}
-#   src/${target_name}_node.cpp
-#   src/${target_name}.cpp
-# )
+## Declare a C++ executable
+add_executable(${target_name}
+  src/${target_name}_node.cpp
+  src/${target_name}.cpp
+)
 
-# ## Specify libraries to link a library or executable target against
-# target_link_libraries(${target_name}
-#   ${catkin_LIBRARIES}
-# )
-
-# #------------------------------------
-# #  rotation_done
-# #------------------------------------
-# set(target_name rotation_done)
-
-# ## Declare a C++ executable
-# add_executable(${target_name}
-#   src/${target_name}_node.cpp
-#   src/${target_name}.cpp
-# )
-
-# ## Specify libraries to link a library or executable target against
-# target_link_libraries(${target_name}
-#   ${catkin_LIBRARIES}
-# )
+## Specify libraries to link a library or executable target against
+target_link_libraries(${target_name}
+  ${catkin_LIBRARIES}
+)
 
 #===========================================================
 # Install

@@ -4,7 +4,7 @@
   <name>localization</name>
   <version>0.5.0</version>
   <description>
-    ROBAIR Laser Scanner Tutorial, Follow Me Behavior.
+    The Localization package.
   </description>
   <maintainer email="NoeBoulaye@todo.todo">Noe Boulaye</maintainer>
   <license>LGPLV3</license>
@@ -21,8 +21,8 @@
   <depend>nav_msgs</depend>
   <depend>genmsg</depend>
   <depend>tf</depend>
-  
   <depend>tutorial_ros</depend>
+  
   <exec_depend>dataset</exec_depend>
 
 </package>

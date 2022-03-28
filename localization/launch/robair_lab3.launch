@@ -3,25 +3,28 @@
 
   <!-- <arg name="namespace" default="tutorial_ros" /> -->
 
-  <arg name="bags_path" default="$(find dataset)/robair_dataset/" />
+  <arg name="bags_path" default="$(find dataset)/robair_bags/" />
+  <arg name="maps_path" default="$(find dataset)/robair_maps/" />
 
-  <arg name="file_1" default="2017-09-07-16-55-12" />
-  <arg name="file_2" default="2017-09-07-16-57-44" />
-  <arg name="file_3" default="2017-09-07-16-59-27" />
-  <arg name="file_4" default="2017-09-07-17-10-29" />
-  <arg name="file_5" default="2017-09-07-17-18-40" />
-  <arg name="file_6" default="2018-01-24-17-44-23" />
+  <arg name="localization" default="localization_test" />
+
+  <arg name="map1" default="map_1st" />
+  <arg name="map2" default="map_2nd" />
+  <arg name="map3" default="map_3rd" />
   
-  <node pkg="rosbag" type="play" name="player"  args="--clock $(arg bags_path)$(arg file_3).bag"/> <!-- output="screen" -->
-  <group> 
-    <!-- <node type="robot_moving" name="robot_moving" pkg="tutorial_ros"/> -->
+  <!-- output="screen" -->
+  <node pkg="rosbag" type="play" name="player"  args="--clock $(arg bags_path)$(arg localization).bag"/> 
+
+  <!-- localization -->
+  <group>
+    <node type="sensor_model" name="sensor_model" pkg="localization" output="screen"/>
+    <node type="localization" name="localization" pkg="localization" output="screen"/>
   </group>
 
-  <group>
-    <!-- <node type="detection" name="detection" output="screen" pkg="follow_me"/> -->
-  </group>
+  <!-- Map Server-->
+  <node type="map_server" name="map_server" pkg="map_server" output="screen" args="$(arg maps_path)/$(arg map1).yaml"/>
 
   <!-- RViz -->
-  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find follow_me)/config/rviz_config.rviz"/>
+  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find localization)/config/rviz_config.rviz"/>
 
 </launch>
