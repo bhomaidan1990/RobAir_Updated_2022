@@ -38,6 +38,13 @@ roslaunch tutorial_ros robair_lab1.launch
 roslaunch follow_me robair_lab2.launch
 ```
 
+### Lab 3
+
+```
+. devel/setup.bash
+roslaunch localization robair_lab3.launch
+```
+
 ## Known Bugs:
 
 There is delay in parsing the markers!
