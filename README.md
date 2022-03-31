@@ -44,6 +44,12 @@ roslaunch follow_me robair_lab2.launch
 . devel/setup.bash
 roslaunch localization robair_lab3.launch
 ```
+### Simulation
+
+```
+. devel/setup.bash
+roslaunch gazebo_mimic rviz_robair.launch
+```
 
 ## Known Bugs:
 
