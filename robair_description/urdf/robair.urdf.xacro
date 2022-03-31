@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<robot name="robair" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <!-- Laser Scanner -->
+  <xacro:include filename="$(find robair_description)/urdf/hokuyo.urdf.xacro" />
+  <!-- Wheel -->
+  <xacro:include filename="$(find robair_description)/urdf/wheel.urdf.xacro" />
+  <!-- Wheel Support -->
+  <xacro:include filename="$(find robair_description)/urdf/wheel_support.urdf.xacro" />
+
+  <!-- ######################### Links ############################### -->
+  <!-- base_link -->
+  <link name="base_link"></link>
+
+  <!-- body -->
+  <xacro:property name="height" value="0.2" />
+  <xacro:property name="length" value="0.5" />
+  <xacro:property name="width"  value="0.3" />
+
+  <link name="body">
+      <visual>
+          <origin xyz="0 0 0.1" rpy="0 0 0" />
+          <geometry>
+              <box size="${length} ${width} ${height}"/>
+          </geometry>
+              <material name="Cyan">
+              <color rgba="0 1.0 1.0 0.3"/>
+          </material>
+          </visual>
+      <collision>
+          <geometry>
+              <box size="${length} ${width} ${height}"/>
+          </geometry>
+      </collision>
+  </link>
+
+  <!-- Wheel Mounting Positions -->
+  <xacro:property name="wheel_vertical_offset" value="0.01" />
+
+  <!-- ROBAIR wheel macros -->
+  <xacro:wheel wheel_prefix="left" wheel_length="0.02" wheel_radius="0.5">
+    <origin xyz="0 ${-length/2} ${wheel_vertical_offset}" rpy="0 0 0" />
+  </xacro:wheel>
+  <xacro:wheel wheel_prefix="right" wheel_length="0.02" wheel_radius="0.5">
+    <origin xyz="0 ${length/2} ${wheel_vertical_offset}" rpy="0 0 0" />
+  </xacro:wheel>
+  <xacro:wheel wheel_prefix="front" wheel_length="0.01" wheel_radius="0.3">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:wheel>
+  <xacro:wheel wheel_prefix="rear" wheel_length="0.01" wheel_radius="0.3">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:wheel>
+
+  <!-- ROBAIR Wheel Supports -->
+  <xacro:wheel_support prefix="front">
+    <origin xyz="0 0 ${wheel_vertical_offset}" rpy="0 0 0" />
+  </xacro:wheel_support>
+   
+  <xacro:wheel_support prefix="rear">
+    <origin xyz="0 0 ${wheel_vertical_offset}" rpy="0 0 0" />
+  </xacro:wheel_support>
+
+  <!-- ########## Joints ################### -->
+  <joint name="base_link_to_body" type="fixed">
+    <parent link="base_link"/>
+    <child link="body"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="left_wheel" type="continuous">
+    <parent link="body"/>
+    <child link="left_wheel_link"/>
+    <origin xyz="0 ${-length/3} ${wheel_vertical_offset}" rpy="0 0 0" />
+    <axis xyz="0 1 0" rpy="0 0 0" />
+  </joint>
+
+  <joint name="right_wheel" type="continuous">
+    <parent link="body"/>
+    <child link="right_wheel_link"/>
+    <origin xyz="0 ${length/3} ${wheel_vertical_offset}" rpy="0 0 0" />
+    <axis xyz="0 1 0" rpy="0 0 0" />
+  </joint>
+
+  <joint name="front_support_joint" type="fixed">
+    <parent link="body" />
+    <child link="front_wheel_support" />
+    <origin xyz="${width/2} -0.032 ${wheel_vertical_offset/2}" rpy="0 0 0" />
+    <axis xyz="1 0 0" rpy="0 0 0" />
+  </joint>
+
+  <joint name="rear_support_joint" type="fixed">
+    <parent link="body" />
+    <child link="rear_wheel_support" />
+    <origin xyz="${-width/2} -0.032 ${wheel_vertical_offset/2}" rpy="0 0 0" />
+    <axis xyz="1 0 0" rpy="0 0 0" />
+  </joint>
+
+  <joint name="front_wheel" type="fixed">
+    <parent link="front_wheel_support"/>
+    <child link="front_wheel_link"/>
+    <origin xyz="0.05 0.03 -0.01" rpy="0 0 0" />
+    <axis xyz="0 0.0 0.0" rpy="0 0 0" />
+  </joint>
+
+  <joint name="rear_wheel" type="fixed">
+    <parent link="rear_wheel_support"/>
+    <child link="rear_wheel_link"/>
+    <origin xyz="0.05 0.03 -0.01" rpy="0 0 0" />
+    <axis xyz="0 0.0 0.0" rpy="0 0 0" />
+  </joint>
+
+  <!-- ### Laser Sensor Activation -->
+  <!-- Laser Scanner Placement and Parameters -->
+  <xacro:arg name="laser_ust10_parent"  default="$(optenv ROBAIR_UST10_PARENT body)" />
+  <xacro:arg name="laser_ust10_topic"   default="$(optenv ROBAIR_UST10_TOPIC /scan)" />
+  <xacro:arg name="laser_ust10_xyz"     default="$(optenv ROBAIR_UST10_XYZ 0.2206 0.0 0.0)" />
+  <xacro:arg name="laser_ust10_rpy"     default="$(optenv ROBAIR_UST10_RPY 0 0 0)" /> 
+
+  <xacro:hokuyo_ust10_mount topic="$(arg laser_ust10_topic)" prefix="" parent_link="$(arg laser_ust10_parent)">
+    <origin xyz="$(arg laser_ust10_xyz)" rpy="$(arg laser_ust10_rpy)" />
+  </xacro:hokuyo_ust10_mount>
+
+  <!-- Interface with ros control -->
+  <!-- <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+  </gazebo> -->
+
+</robot>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
+  <name>robair_description</name>
+  <version>0.0.0</version>
+  <description>
+    ROBAIR Robot Description.
+  </description>
+  <maintainer email="NoeBoulaye@todo.todo">Noe Boulaye</maintainer>
+  <license>LGPLV3</license>
+  <author>Olivier Aycard</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>xacro</exec_depend>
+
+</package>
