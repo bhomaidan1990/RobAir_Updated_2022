@@ -47,7 +47,7 @@ roslaunch follow_me robair_lab2.launch
 roslaunch localization robair_lab3.launch
 ```
 ### Gazebo Simulation
-Be sure to have the `` package
+Be sure to have the `pointcloud-to-laserscan` package
 `sudo apt install ros-noetic-pointcloud-to-laserscan`
 Then:
 ```
