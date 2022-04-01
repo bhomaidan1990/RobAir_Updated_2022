@@ -2,6 +2,8 @@
 Introduction to Robotics Labs
 [Course Link](https://lig-membres.imag.fr/aycard/html/Enseignement/M1/Robotics/index.html)
 
+![RobAir](https://i.imgur.com/7ZzmMoE.png)
+
 ---
 
 ## Requirements
