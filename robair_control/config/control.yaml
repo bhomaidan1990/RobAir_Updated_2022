@@ -4,8 +4,8 @@ robair_joint_publisher:
 
 robair_velocity_controller:
   type: "diff_drive_controller/DiffDriveController"
-  left_wheel: ['LF_WHEEL_JOINT', 'LH_WHEEL_JOINT']
-  right_wheel: ['RF_WHEEL_JOINT', 'RH_WHEEL_JOINT']
+  left_wheel: ['left_wheel']
+  right_wheel: ['right_wheel']
   publish_rate: 50
   pose_covariance_diagonal: [0.1, 0.001, 0.001, 0.001, 0.001, 0.3]
   twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
@@ -14,13 +14,9 @@ robair_velocity_controller:
 
 gazebo_ros_control:
   pid_gains:
-    LF_WHEEL_JOINT:
+    left_wheel:
       p: 100.0
-    RF_WHEEL_JOINT:
-      p: 100.0
-    LH_WHEEL_JOINT:
-      p: 100.0
-    RH_WHEEL_JOINT:
+    right_wheel:
       p: 100.0
 
   # Base frame_id
