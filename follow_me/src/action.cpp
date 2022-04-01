@@ -36,7 +36,7 @@
 #define ERROR_ROTATION_THRESHOLD 0.2//radians
 #define ERROR_TRANSLATION_THRESHOLD 0.3// meters
 
-#define rotation_speed_max 0.8//radians/s
+#define ROTATION_SPEED_MAX 0.8//radians/s
 
 #define KP_R 1
 #define KI_R 0
@@ -228,7 +228,7 @@ void Action::computeTranslation()
 void Action::combineRotationTranslation()
 {
 
-    float coef_rotation = fabs(rotation_to_do)/rotation_speed_max;
+    float coef_rotation = fabs(rotation_to_do)/ROTATION_SPEED_MAX;
     coef_rotation = clip(coef_rotation, 0, 1);
     // if (coef_rotation > 1)
     //     coef_rotation = 1;

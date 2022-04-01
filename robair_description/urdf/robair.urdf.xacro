@@ -10,7 +10,8 @@
 
   <!-- ######################### Links ############################### -->
   <!-- base_link -->
-  <link name="base_link"></link>
+  <link name="$(arg parent)"></link>
+  <!-- <link name="base_link"></link> -->
 
   <!-- body -->
   <xacro:property name="height" value="0.2" />
@@ -24,7 +25,7 @@
               <box size="${length} ${width} ${height}"/>
           </geometry>
               <material name="Cyan">
-              <color rgba="0 1.0 1.0 0.3"/>
+              <color rgba="0 1.0 1.0 0.7"/>
           </material>
           </visual>
       <collision>
@@ -62,19 +63,19 @@
 
   <!-- ########## Joints ################### -->
   <joint name="base_link_to_body" type="fixed">
-    <parent link="base_link"/>
+    <parent link="$(arg parent)"/>
     <child link="body"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.22" rpy="0 0 0"/>
   </joint>
 
-  <joint name="left_wheel" type="continuous">
+  <joint name="left_wheel" type="fixed"> <!-- type="continuous" -->
     <parent link="body"/>
     <child link="left_wheel_link"/>
     <origin xyz="0 ${-length/3} ${wheel_vertical_offset}" rpy="0 0 0" />
     <axis xyz="0 1 0" rpy="0 0 0" />
   </joint>
 
-  <joint name="right_wheel" type="continuous">
+  <joint name="right_wheel" type="fixed"> <!-- type="continuous" -->
     <parent link="body"/>
     <child link="right_wheel_link"/>
     <origin xyz="0 ${length/3} ${wheel_vertical_offset}" rpy="0 0 0" />
@@ -95,14 +96,14 @@
     <axis xyz="1 0 0" rpy="0 0 0" />
   </joint>
 
-  <joint name="front_wheel" type="fixed">
+  <joint name="front_wheel" type="fixed"> <!-- type="continuous" -->
     <parent link="front_wheel_support"/>
     <child link="front_wheel_link"/>
     <origin xyz="0.05 0.03 -0.01" rpy="0 0 0" />
     <axis xyz="0 0.0 0.0" rpy="0 0 0" />
   </joint>
 
-  <joint name="rear_wheel" type="fixed">
+  <joint name="rear_wheel" type="fixed"> <!-- type="continuous" -->
     <parent link="rear_wheel_support"/>
     <child link="rear_wheel_link"/>
     <origin xyz="0.05 0.03 -0.01" rpy="0 0 0" />

@@ -3,7 +3,8 @@
 <launch>
 
   <!-- Load the URDF into the ROS Parameter Server -->
-  <param name="robot_description" command="$(find xacro)/xacro  $(find robair_description)/urdf/robair.urdf.xacro" />
+  <arg name="parent_link" default="laser" />
+  <param name="robot_description" command="$(find xacro)/xacro  parent:=$(arg parent_link) $(find robair_description)/urdf/robair.urdf.xacro" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" />
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" output="screen" />
 

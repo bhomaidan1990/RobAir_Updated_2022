@@ -26,7 +26,13 @@
   </group>
 
   <!-- Map Server-->
-  <node type="map_server" name="map_server" pkg="map_server" output="screen" args="$(arg maps_path)/$(arg map1).yaml"/>
+  <node type="map_server" name="map_server" pkg="map_server" output="screen" args="$(arg maps_path)/$(arg map3).yaml"/>
+
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <arg name="parent_link" default="map" />
+  <param name="robot_description" command="$(find xacro)/xacro  parent:=$(arg parent_link) $(find robair_description)/urdf/robair.urdf.xacro" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" output="screen" />
 
   <!-- RViz -->
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find localization)/config/rviz_config.rviz"/>
