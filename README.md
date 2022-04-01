@@ -57,5 +57,15 @@ roslaunch robair_gazebo robair_gazebo.launch
 
 ## Known Bugs:
 
+> General
 There is delay in parsing the markers!
+
+> Gazebo
 There is a known bug in Gazebo, so if you see some red errors don't worry, it will not be a problem.
+
+> Robot Control
+Robot Controller is not working well.
+
+> Robot Description
+Wheel joints has type has to be changed in `robair_description`from `fixed` into `continuous` in the xacro/urdf file.
+Collision mode is not checked with accurate measurements.
