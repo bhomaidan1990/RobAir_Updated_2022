@@ -58,7 +58,7 @@ roslaunch robair_gazebo robair_gazebo.launch
 ## Known Bugs:
 
 > General
-There is delay in parsing the markers!
+There is a delay in parsing the markers!
 
 > Gazebo
 There is a known bug in Gazebo, so if you see some red errors don't worry, it will not be a problem.
