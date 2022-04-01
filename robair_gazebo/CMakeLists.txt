@@ -23,7 +23,7 @@ endif()
 # CMake project
 ########################################################################################################################
 project(${extracted_name} VERSION ${extracted_version} LANGUAGES CXX)
-
+set(CMAKE_CXX_FLAGS "-std=c++17 -Wall -Wextra")
 #===========================================================
 # Dependencies
 #===========================================================
@@ -32,45 +32,41 @@ project(${extracted_name} VERSION ${extracted_version} LANGUAGES CXX)
 #-----------------------------
 # Catkin packages
 #-----------------------------
-find_package(catkin REQUIRED 
-# COMPONENTS
-#   roscpp
-#   rospy
-#   std_msgs
-#   sensor_msgs
-#   visualization_msgs
-#   geometry_msgs
-#   nav_msgs
-#   genmsg
-#   tf
-#   tutorial_ros
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  std_msgs
+  sensor_msgs
+  visualization_msgs
+  geometry_msgs
+  nav_msgs
+  genmsg
+  tf
 )
 
+find_package(gazebo REQUIRED)
+find_package(Boost REQUIRED COMPONENTS thread)
+
 catkin_package(
-  # INCLUDE_DIRS
-  #   include
-  # LIBRARIES
-    ## Libraries to be built
-  # CATKIN_DEPENDS
-  #   roscpp
-  #   rospy
-  #   std_msgs
-  #   sensor_msgs
-  #   visualization_msgs
-  #   geometry_msgs
-  #   nav_msgs
-  #   genmsg
-  #   tf
-  #   controller_manager
-  #   gazebo_ros
-  #   gazebo_ros_control
-  #   gazebo_plugins
-  #   robot_state_publisher
-  #   joint_state_publisher
-  #   ros_control
-  #   ros_controllers
-  # DEPENDS
-    # External Libraries
+  INCLUDE_DIRS
+    include
+  LIBRARIES
+    odometry_source_plugin
+  CATKIN_DEPENDS
+    roscpp
+    rospy
+    std_msgs
+    sensor_msgs
+    visualization_msgs
+    geometry_msgs
+    nav_msgs
+    genmsg
+    tf
+    # ${PACKAGE_DEPENDENCIES}
+  DEPENDS
+    # gazebo_ros
+    Boost
+    GAZEBO
 )
 
 #===========================================================
@@ -79,36 +75,48 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(
-#   include
-#   ${catkin_INCLUDE_DIRS}
-# )
+include_directories(
+  include
+  ${GAZEBO_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
+)
+link_directories(
+  ${GAZEBO_LIBRARY_DIRS}
+)
 
 # #------------------------------------
 # #  node_name
 # #------------------------------------
-# set(target_name node_name)
+add_library(
+  odometry_source_plugin
+        src/OdometrySource.cpp
+)
 
-# ## Declare a C++ executable
-# add_executable(${target_name}
-#   src/${target_name}_node.cpp
-#   src/${target_name}.cpp
-# )
+add_dependencies(
+  odometry_source_plugin
+  ${catkin_EXPORTED_TARGETS}
+)
 
-# ## Specify libraries to link a library or executable target against
-# target_link_libraries(${target_name}
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(
+  odometry_source_plugin
+  ${catkin_LIBRARIES}
+)
 
+install(TARGETS odometry_source_plugin
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 #===========================================================
 # Install
 #===========================================================
 
-# install(
-#   DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION "${CATKIN_PACKAGE_INCLUDE_DESTINATION}"
-# )
+install(
+  DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION "${CATKIN_PACKAGE_INCLUDE_DESTINATION}"
+)
 
 install(
   DIRECTORY launch config

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
+  <name>robair_gazebo</name>
+  <version>0.5.0</version>
+  <description>
+    Gazebo Mimc for RobAir.
+  </description>
+  <maintainer email="NoeBoulaye@todo.todo">Noe Boulaye</maintainer>
+  <license>LGPLV3</license>
+  <author>Olivier Aycard</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>genmsg</depend>
+  <depend>tf</depend>
+  
+  <build_depend>gazebo_ros</build_depend>
+  <exec_depend>robair_description</exec_depend>
+  <exec_depend>velodyne_gazebo_plugins</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>robair_control</exec_depend>
+
+  <export>
+    <gazebo plugin_path="${prefix}/lib" gazebo_media_path="${prefix}"/>
+  </export>
+
+</package>

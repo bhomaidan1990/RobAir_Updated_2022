@@ -16,9 +16,16 @@
   <node pkg="rosbag" type="play" name="player"  args="--clock $(arg bags_path)$(arg file_6).bag"/>
 
   <!-- Load the URDF into the ROS Parameter Server -->
-  <arg name="parent_link" default="laser" />
-  <param name="robot_description" command="$(find xacro)/xacro  parent:=$(arg parent_link) $(find robair_description)/urdf/robair.urdf.xacro" />
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" />
+  <!-- Name of the robot description parameter -->
+  <arg name="robot_description" default="robot_description"/>
+  <include file="$(find robair_description)/launch/load.launch">
+    <arg name="parent" value="laser" />
+  </include>
+  <node name="robair_robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
+    <param name="publish_frequency" value="50"/>
+    <param name="use_tf_static"     value="true"/>
+    <remap from="robot_description" to="$(arg robot_description)"/>
+  </node>
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" output="screen" />
 
   <!-- tutorial_ros -->

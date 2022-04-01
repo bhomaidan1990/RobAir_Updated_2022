@@ -46,7 +46,16 @@ roslaunch follow_me robair_lab2.launch
 . devel/setup.bash
 roslaunch localization robair_lab3.launch
 ```
+### Gazebo Simulation
+Be sure to have the `` package
+`sudo apt install ros-noetic-pointcloud-to-laserscan`
+Then:
+```
+. devel/setup.bash
+roslaunch robair_gazebo robair_gazebo.launch
+```
 
 ## Known Bugs:
 
 There is delay in parsing the markers!
+There is a known bug in Gazebo, so if you see some red errors don't worry, it will not be a problem.

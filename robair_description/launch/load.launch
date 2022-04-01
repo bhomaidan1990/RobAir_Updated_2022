@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <arg name="parent" default="laser" />
+  <param name="robot_description" command="$(find xacro)/xacro  parent:=$(arg parent) $(find robair_description)/urdf/robair.urdf.xacro" />
+</launch>

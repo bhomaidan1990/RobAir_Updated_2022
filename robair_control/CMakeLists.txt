@@ -32,17 +32,12 @@ project(${extracted_name} VERSION ${extracted_version} LANGUAGES CXX)
 #-----------------------------
 # Catkin packages
 #-----------------------------
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS roslaunch)
 
 catkin_package()
 
-#===========================================================
-# Install
-#===========================================================
+roslaunch_add_file_check(launch)
 
-install(
-	DIRECTORY meshes urdf launch
-	DESTINATION "${CATKIN_PACKAGE_SHARE_DESTINATION}"
+install(DIRECTORY config launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
-
-#===========================================================
