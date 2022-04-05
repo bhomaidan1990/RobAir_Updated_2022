@@ -124,7 +124,8 @@ void Detection::update(){
         previous_robot_moving = current_robot_moving;
 
         //graphical display of the results
-        populateMarkerTopic(pub_detection_marker, nb_pts, display, colors);        
+        if(nb_pts>0)
+            populateMarkerTopic(pub_detection_marker, nb_pts, display, colors);        
     }
     else
         if ( !init_robot )

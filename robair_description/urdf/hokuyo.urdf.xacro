@@ -70,6 +70,15 @@
         </geometry>
         <material name="black" />
       </visual>
+
+      <collision>
+        <origin xyz="0.0 0 0.24" rpy="0 0 0" />
+        <geometry>
+          <!-- Origin of this mesh is the base of the bracket. -->
+          <cylinder length="0.08" radius="0.03" />
+        </geometry>
+        <material name="black" />
+      </collision>
     </link>
 
     <joint name="${prefix}_laser_joint" type="fixed">

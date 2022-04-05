@@ -104,7 +104,8 @@ void ObstacleDetection::update(){
         colors[nb_pts].b = 0;
         colors[nb_pts].a = 1.0;
         nb_pts++;
-        populateMarkerTopic(pub_closest_obstacle_marker, nb_pts, display, colors);
+        if(nb_pts>0)
+            populateMarkerTopic(pub_closest_obstacle_marker, nb_pts, display, colors);
 
         if ( distancePoints(closest_obstacle, previous_closest_obstacle) > 0.05 ) 
         {

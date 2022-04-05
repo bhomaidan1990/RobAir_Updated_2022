@@ -105,7 +105,8 @@ void SensorModel::update(){
         new_position = false;
         int score_current = sensorModel(initial_position.x, initial_position.y, initial_orientation);
         ROS_INFO("initial_position(%f, %f, %f): score = %i", initial_position.x, initial_position.y, initial_orientation*180/M_PI, score_current);
-        populateMarkerTopic(pub_sensor_model_marker, nb_pts, display, colors, "map");
+        if(nb_pts>0)
+            populateMarkerTopic(pub_sensor_model_marker, nb_pts, display, colors, "map");
 
     }
     else

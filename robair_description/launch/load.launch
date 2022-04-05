@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
   <!-- Load the URDF into the ROS Parameter Server -->
-  <arg name="parent" default="laser" />
+  <arg name="parent" default="map" />
   <param name="robot_description" command="$(find xacro)/xacro  parent:=$(arg parent) $(find robair_description)/urdf/robair.urdf.xacro" />
+    
+  <node name="robair_robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
+    <param name="publish_frequency" value="50"/>
+    <!-- <param name="use_tf_static"     value="true"/> -->
+    <!-- <remap from="robot_description" to="$(arg robot_description)"/> -->
+  </node>
+  
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" output="screen" />
+
 </launch>

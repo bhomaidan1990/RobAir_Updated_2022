@@ -21,7 +21,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCL
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.-->
 
 <!-- Source: https://github.com/husky/husky/blob/noetic-devel/husky_description/urdf/wheel.urdf.xacro -->
-<robot xmlns:xacro="http://ros.org/wiki/xacro" name="wheel">
+<robot name="wheel" xmlns:xacro="http://ros.org/wiki/xacro">
 	
 	<xacro:property name="M_PI" value="3.14159"/>
 
@@ -40,9 +40,9 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 			</visual>
 			<!-- TODO: collision description to be fixed! -->
 			<collision>
-				<origin xyz="0 0 0" rpy="${M_PI/2} 0 0" />
+				<origin xyz="0 0 0" rpy="${-M_PI/2} 0 0" />
 				<geometry>
-					<cylinder length="${wheel_length}" radius="${wheel_radius/3}" />
+					<cylinder length="0.05" radius="0.08" />
 				</geometry>
 			</collision>
 		</link>
@@ -55,12 +55,12 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 			<fdir1 value="1 0 0"/>
 		</gazebo>
 
-		<!-- <joint name="${wheel_prefix}_wheel" type="continuous">
-			<parent link="body"/>
+		<joint name="${wheel_prefix}_wheel" type="continuous">
+			<parent link="robair_body"/>
 			<child link="${wheel_prefix}_wheel_link"/>
 			<xacro:insert_block name="joint_pose"/>
 			<axis xyz="0 1 0" rpy="0 0 0" />
-		</joint> -->
+		</joint>
 
 		<transmission name="${wheel_prefix}_wheel_trans" type="SimpleTransmission">
 			<type>transmission_interface/SimpleTransmission</type>
