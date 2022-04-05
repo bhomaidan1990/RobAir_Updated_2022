@@ -31,7 +31,6 @@
         <parent link="robair_body"/>
         <child link="${prefix}_caster_wheel_link"/>
         <xacro:insert_block name="origin"/>
-        <axis xyz="0 1 0" rpy="0 0 0" />
     </joint>
 
   </xacro:macro>

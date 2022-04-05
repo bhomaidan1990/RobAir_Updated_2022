@@ -1,0 +1,18 @@
+robair:
+  # Publish all joint states -----------------------------------
+  # Creates the /joint_states topic necessary in ROS
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+
+  # Velocity Controllers ---------------------------------------
+  left_Wheel_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: left_wheel
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+    #pid: {p: 50.0, i: 0.1, d: 0.0}
+  right_Wheel_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: right_wheel
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+    #pid: {p: 50.0, i: 0.1, d: 0.0}

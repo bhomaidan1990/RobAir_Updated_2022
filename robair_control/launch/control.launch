@@ -14,16 +14,11 @@
 
   <!-- Load controller configuration -->
   <rosparam command="load" file="$(find robair_control)/config/control.yaml" />
+  <rosparam command="load" file="$(find robair_control)/config/robair_controllers.yaml" />
 
   <!-- Spawn controllers -->
   <node name="base_controller_spawner" pkg="controller_manager" type="spawner"
         args="robair_joint_publisher robair_velocity_controller"/>
-
-  <node name="robair_robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
-    <param name="publish_frequency" value="50"/>
-    <param name="use_tf_static"     value="true"/>
-    <remap from="robot_description" to="$(arg robot_description)"/>
-  </node>
 
   <node pkg="twist_mux" type="twist_mux" name="twist_mux">
     <rosparam command="load" file="$(find robair_control)/config/twist_mux.yaml" />

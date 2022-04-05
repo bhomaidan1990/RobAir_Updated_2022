@@ -6,7 +6,7 @@
   <!-- Run Gazebo headless -->
   <arg name="headless"                              default="false"/>
   <!-- Model path -->
-  <arg name="model_path"                            default="$(find robair_gazebo)/"/>
+  <arg name="model_path"                            default="$(find robair_gazebo)/config/"/>
   <arg name="robot_namespace"                       default=""/>
   <arg name="robot_model_name"                      default="robair"/>
   <arg name="enable_ekf"                            default="true"/>
@@ -61,9 +61,7 @@
     args="-param $(arg robot_description) -urdf -model $(arg robot_model_name) -x $(arg x)
       -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"
     output="screen"/>
-    
-    
-    
+
   <!-- Convert 3D velodyne scan to laser scan -->
   <node name= "pointcloud_to_laserscan" pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" if="$(arg laser_enabled)">
         <remap from="cloud_in" to="/rslidar_points"/>
@@ -91,11 +89,15 @@
         </rosparam>
   </node>
 
-
+  <!-- RViz -->
+  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find robair_gazebo)/config/rviz_config.rviz"/>
+  
   <include file="$(find robair_control)/launch/control.launch">
     <arg name="simulation"      default="true"/>
     <arg name="robot_namespace"     default="$(arg robot_namespace)"/>
     <arg name="robot_description"   default="$(arg robot_description)"/>
     <arg name="enable_ekf"          default="$(arg enable_ekf)" />
   </include>
+
+  <rosparam file="$(find robair_gazebo)/config/gazebo_pid.yaml" command="load" />
 </launch>
