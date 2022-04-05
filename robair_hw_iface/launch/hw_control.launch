@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!-- https://answers.ros.org/question/221093/basic-diff_drive-question/ -->
+<!-- https://github.com/ros-controls/ros_controllers/tree/kinetic-devel/diff_drive_controller/test -->
+
+<launch>
+
+    <!-- Load robot description for gazebo -->
+    <include file="$(find robair_description)/launch/load.launch">
+    <arg name="parent" value="laser" />
+    </include>
+
+    <!-- Robair HW IFace Node -->
+    <node name="robair_hw_iface" pkg="robair_hw_iface" type="robair_hw_iface"/>
+    <!-- Robair Control -->
+    <include file="$(find robair_control)/launch/control.launch"/>
+          
+</launch>
