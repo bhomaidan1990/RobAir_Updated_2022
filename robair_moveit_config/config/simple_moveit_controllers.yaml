@@ -1,0 +1,8 @@
+controller_list:
+  - name: velocity_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - left_wheel
+      - right_wheel

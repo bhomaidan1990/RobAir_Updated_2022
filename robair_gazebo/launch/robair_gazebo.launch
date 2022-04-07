@@ -20,7 +20,7 @@
   <!-- Set the initial pose of the robot's main body -->
   <arg name="x"                                     default="0.0"/>
   <arg name="y"                                     default="0.0"/>
-  <arg name="z"                                     default="0.0"/>
+  <arg name="z"                                     default="0.4"/>
   <arg name="roll"                                  default="0.0"/>
   <arg name="pitch"                                 default="0.0"/>
   <arg name="yaw"                                   default="0.0"/>
@@ -88,16 +88,21 @@
             concurrency_level: 1
         </rosparam>
   </node>
+  <rosparam file="$(find robair_gazebo)/config/gazebo_pid.yaml" command="load" />
 
   <!-- RViz -->
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find robair_gazebo)/config/rviz_config.rviz"/>
+  <!-- Teleop Twist Keyboard -->
+  <node name="control_keyboard" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen"/>
   
-  <include file="$(find robair_control)/launch/control.launch">
+  <!-- <include file="$(find robair_control)/launch/control.launch">
     <arg name="simulation"      default="true"/>
     <arg name="robot_namespace"     default="$(arg robot_namespace)"/>
     <arg name="robot_description"   default="$(arg robot_description)"/>
     <arg name="enable_ekf"          default="$(arg enable_ekf)" />
-  </include>
+    <remap from="/cmd_vel" to="/robair_velocity_controller/cmd_vel" />
+    <remap from="/odom"  to="/robair_velocity_controller/odom" />
+  </include> -->
 
-  <rosparam file="$(find robair_gazebo)/config/gazebo_pid.yaml" command="load" />
+  
 </launch>

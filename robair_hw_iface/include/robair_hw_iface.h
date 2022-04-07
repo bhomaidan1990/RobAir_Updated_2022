@@ -187,7 +187,7 @@ RobAirHWInterface::RobAirHWInterface()
       if(i==0)
         os << "left_wheel";
       else
-        os << "righ_wheel";
+        os << "right_wheel";
       hardware_interface::JointStateHandle state_handle(os.str(), &pos[i], &vel[i], &eff[i]);
       jnt_state_interface.registerHandle(state_handle);
 

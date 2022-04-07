@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: robair_description
+    relative_path: urdf/robair.urdf
+    xacro_args: ""
+  SRDF:
+    relative_path: config/robair.srdf
+  CONFIG:
+    author_name: s
+    author_email: s@todo.com
+    generated_timestamp: 1649341288
