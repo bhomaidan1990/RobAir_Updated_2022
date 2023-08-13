@@ -23,10 +23,14 @@
   <depend>tf</depend>
   
   <build_depend>gazebo_ros</build_depend>
+  <build_depend>pointcloud_to_laserscan</build_depend>
+  
   <exec_depend>robair_description</exec_depend>
   <exec_depend>velodyne_gazebo_plugins</exec_depend>
   <exec_depend>gazebo_ros</exec_depend>
   <exec_depend>robair_control</exec_depend>
+  <exec_depend>pointcloud_to_laserscan</exec_depend>
+  <exec_depend>turtlebot3_gazebo</exec_depend>
 
   <export>
     <gazebo plugin_path="${prefix}/lib" gazebo_media_path="${prefix}"/>

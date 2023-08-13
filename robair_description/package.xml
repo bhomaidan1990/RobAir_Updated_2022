@@ -12,6 +12,12 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <exec_depend>xacro</exec_depend>
+  <depend>xacro</depend>
+  <depend>urdf</depend>
+  <depend>roslib</depend>
+  <depend>hector_gazebo_plugins</depend>
+  
+  <exec_depend>velodyne_description</exec_depend>
+  <exec_depend>velodyne_gazebo_plugins</exec_depend>
 
 </package>
