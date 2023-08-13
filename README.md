@@ -2,7 +2,7 @@
 Introduction to Robotics Labs
 [Course Link](https://lig-membres.imag.fr/aycard/html/Enseignement/M1/Robotics/index.html)
 
-![RobAir](https://i.imgur.com/YoAWV6N.png)
+![RobAir](img/RobAir_RVIZ.png)
 
 ---
 
@@ -17,12 +17,13 @@ Introduction to Robotics Labs
 Considering that you have Ros1:
 
 ```
-mkdir -p ~/catkin_ws/src && cd ~/catkin_ws/src
-git clone https://github.com/bhomaidan1990/RobAir_Updated_2022.git
-mv RobAir_Updated_2022/* ./ && rm -rf RobAir_Updated_2022
-cd .. && catkin init
+mkdir -p robair_ws/src && cd robair_ws
+git clone https://github.com/bhomaidan1990/RobAir_Updated_2022.git src/
+# install dependencies
+rosdep install --from-paths src --ignore-src -r -y
+catkin init
 catkin config -DCMAKE_BUILD_TYPE=RELEASE
-catkin clean --all -y && catkin b
+catkin b
 ```
 Then:
 
@@ -47,9 +48,6 @@ roslaunch follow_me robair_lab2.launch
 roslaunch localization robair_lab3.launch
 ```
 ### Gazebo Simulation
-Be sure to have the `pointcloud-to-laserscan` package
-`sudo apt install ros-noetic-pointcloud-to-laserscan`
-Then:
 ```
 . devel/setup.bash
 roslaunch robair_gazebo robair_gazebo.launch
@@ -58,10 +56,11 @@ roslaunch robair_gazebo robair_gazebo.launch
 ## Known Bugs:
 
 > Robot Control
-Robot Controller is not working well yet!
+- Robot Controller is not working well yet!
 
 > Robot Description
-Collision mode is not checked with accurate measurements.
+- Collision mode is not checked with accurate measurements.
+- Robot Wheels are different from actual!
 
 > Robot Hardware Interface
-Is not working well yet!
+- Is not working well yet!
